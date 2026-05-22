@@ -389,6 +389,7 @@ Directory structure organized by feature with each feature containing:
 
 - **Purpose**: Main landing page displaying popular and trending movies
 - **Features**:
+  - Movie Slider with 5 movies
   - Search functionality with real-time debounced input
   - Genre filter dropdown for filtering by movie category
   - Infinite scroll pagination for movie lists

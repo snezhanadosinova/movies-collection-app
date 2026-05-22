@@ -71,6 +71,7 @@ function Navbar() {
                   p-2
                   shadow-xl
                   focus:outline-none
+                  z-20
                 "
               >
                 <div className="border-b border-zinc-800 p-3">

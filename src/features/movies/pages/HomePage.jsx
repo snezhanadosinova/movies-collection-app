@@ -2,12 +2,12 @@ import { useState } from "react";
 import MovieGrid from "@/components/movie/MovieGrid";
 import MovieSearch from "@/components/movie/MovieSearch";
 import { useDebounce } from "@/hooks/useDebounce";
-import { usePopularMovies } from "../hooks/usePopularMovies";
 import { useSearchMovies } from "../hooks/useSearchMovies";
 import GenreFilter from "@/components/movie/GenreFilter";
 import InfiniteScrollTrigger from "@/components/common/InfiniteScrollTrigger";
 import { useInfiniteDiscoverMovies } from "../hooks/useInfiniteDiscoverMovies";
 import { useInfinitePopularMovies } from "../hooks/useInfinitePopularMovies";
+import MovieSlider from "@/components/movie/MovieSlider";
 
 function HomePage() {
   const [search, setSearch] = useState("");
@@ -64,6 +64,7 @@ function HomePage() {
       : popularError;
   return (
     <div className="mx-auto max-w-7xl p-10">
+      <MovieSlider />
       <div className="mb-10 flex flex-col gap-4 md:flex-row">
         <div className="flex-1">
           <MovieSearch value={search} onChange={setSearch} />

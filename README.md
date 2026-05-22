@@ -30,6 +30,7 @@ A modern web application for discovering, searching, and managing your favorite 
 - **Zod 4.4.3** - Schema validation
 - **React Icons 5.6.0** - Icon library
 - **React Hot Toast 2.6.0** - Toast notifications
+- **Swiper JS** - Sliders
 
 ### Backend Services
 
