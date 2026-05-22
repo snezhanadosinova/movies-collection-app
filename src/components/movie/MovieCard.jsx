@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { getTmdbImageUrl } from "@/utils/tmdbImages";
 
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 import { useToggleFavorite } from "@/features/favorites/hooks/useToggleFavorite";
@@ -85,13 +86,14 @@ function MovieCard({ movie }) {
       </button>
 
       <img
-        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+        src={getTmdbImageUrl(movie.poster_path)}
         alt={movie.title}
         className="
           h-[400px]
           w-full
           object-cover
         "
+        loading="lazy"
       />
 
       <div className="p-4">

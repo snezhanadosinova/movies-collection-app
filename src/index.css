@@ -17,13 +17,14 @@ body {
 
 .swiper-button-next,
 .swiper-button-prev {
-  color: red !important;
+  --swiper-navigation-color: red;
 }
 
 .swiper-pagination-bullet {
-  background: gray !important;
+  --swiper-pagination-bullet-inactive-color: white;
+  --swiper-pagination-bullet-inactive-opacity: 0.3;
 }
 
 .swiper-pagination-bullet-active {
-  background: red !important;
+  --swiper-pagination-color: red;
 }

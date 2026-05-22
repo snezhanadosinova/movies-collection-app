@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { getTmdbBackdropUrl } from "@/utils/tmdbImages";
 
 export default function MovieSlide({ movie, genreMap }) {
   const navigate = useNavigate();
@@ -6,9 +7,10 @@ export default function MovieSlide({ movie, genreMap }) {
   return (
     <div className="relative h-[75vh] w-full overflow-hidden rounded-2xl">
       <img
-        src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+        src={getTmdbBackdropUrl(movie.backdrop_path)}
         alt={movie.title}
         className="absolute inset-0 h-full w-full object-cover"
+        loading="lazy"
       />
 
       {/* Dark Overlay */}
@@ -26,23 +28,19 @@ export default function MovieSlide({ movie, genreMap }) {
             {movie.overview}
           </p>
           <div className="flex flex-wrap gap-3 my-4">
-            <div className="flex flex-wrap gap-3 my-4">
-              {movie.genre_ids.map((genreId) => (
-                <span
-                  key={genreId}
-                  className="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-medium bg-red-500 text-white"
-                >
-                  {genreMap[genreId]}
-                </span>
-              ))}
-            </div>
+            {movie.genre_ids.map((genreId) => (
+              <span
+                key={genreId}
+                className="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-medium bg-red-500 text-white"
+              >
+                {genreMap[genreId]}
+              </span>
+            ))}
           </div>
           <button
             type="button"
             onClick={() => navigate(`/movies/${movie.id}`)}
-            className="rounded-lg border-2 border-red-500 text-red-500 border-const mapStateToProps = (state) => ({})
-            
-            const mapDispatchToProps = {}-400 px-8 py-4 font-semibold transition hover:bg-red-500 hover:text-black"
+            className="rounded-lg border-2 border-red-500 text-red-500 px-8 py-4 font-semibold transition hover:bg-red-500 hover:text-black"
           >
             More Details
           </button>

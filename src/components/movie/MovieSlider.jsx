@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 
 import "swiper/css";
@@ -9,48 +7,20 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
 import MovieSlide from "./MovieSlide";
-import { getMovieGenres, getPopularMovies } from "../../features/movies/api/tmdbApi";
+import { useSliderMovies } from "../../features/movies/hooks/useSliderMovies";
 
 export default function MovieSlider() {
-  const [sliderMovies, setSliderMovies] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { movies, genreMap, isLoading, isError } = useSliderMovies();
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
+  if (isLoading) return <p className="py-6">Loading...</p>;
 
-    const fetchData = async () => {
-      try {
-        const [popularMovies, allGenres] = await Promise.all([
-          getPopularMovies(),
-          getMovieGenres(),
-        ]);
-          const sliderElements = popularMovies.results.slice(0,5);
-
-        setSliderMovies(sliderElements);
-        setGenres(allGenres);
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
-
-  if (error) {
-    return <div className="text-red-500 text-center py-10">{error}</div>;
+  if (isError) {
+    return (
+      <div className="text-red-500 text-center py-10">
+        Failed to load slider
+      </div>
+    );
   }
-
-  const genreMap = Object.fromEntries(
-    (genres || []).map((genre) => [genre.id, genre.name]),
-  );
 
   return (
     <div className="py-6">
@@ -64,10 +34,10 @@ export default function MovieSlider() {
           pauseOnMouseEnter: true,
         }}
         effect="fade"
-        loop={sliderMovies.length > 3}
+        loop={movies.length > 3}
         className="rounded-2xl"
       >
-        {sliderMovies.map((movie) => (
+        {movies.map((movie) => (
           <SwiperSlide key={movie.id}>
             <MovieSlide movie={movie} genreMap={genreMap} />
           </SwiperSlide>
