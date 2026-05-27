@@ -11,8 +11,8 @@ export function MovieSimilarSection({ similar }) {
     <div className="mx-auto max-w-7xl p-10">
       <h2 className="mb-4 text-2xl font-bold">Similar Movies</h2>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-        {similar.slice(0, 5).map((m) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:grid-cols-4">
+        {similar.slice(0, 4).map((m) => (
           <Link key={m.id} to={`/movies/${m.id}`} className="group">
             <div className="overflow-hidden rounded-lg transition group-hover:scale-105">
               <img

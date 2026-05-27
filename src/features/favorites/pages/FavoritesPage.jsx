@@ -21,7 +21,7 @@ function FavoritesPage() {
     <div className="mx-auto max-w-7xl p-6">
       <h1 className="mb-6 text-3xl font-bold text-white">Your Favorites</h1>
 
-      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
         {movies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}

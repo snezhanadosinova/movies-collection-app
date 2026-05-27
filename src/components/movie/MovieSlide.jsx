@@ -24,7 +24,7 @@ export default function MovieSlide({ movie, genreMap }) {
         <div className="max-w-2xl text-white">
           <h1 className="mb-4 text-3xl font-bold md:text-7xl">{movie.title}</h1>
 
-          <p className="mb-6 text-lg text-gray-300 leading-relaxed">
+          <p className="mb-6 text-lg text-gray-300 leading-relaxed line-clamp-2">
             {movie.overview}
           </p>
           <div className="flex flex-wrap gap-3 my-4">
