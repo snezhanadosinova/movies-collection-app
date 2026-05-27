@@ -24,7 +24,7 @@ function Navbar() {
   };
 
   return (
-    <header className="border-b border-zinc-800 bg-zinc-950">
+    <header className="border-b border-zinc-800 bg-zinc-950 h-20">
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-5">
         <Link to="/" className="text-2xl font-bold text-red-500">
           Movies

@@ -6,7 +6,7 @@ function AuthFormWrapper({
   submitLabel,
 }) {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex  min-h-[calc(100vh-80px)] items-center justify-center px-4">
       <form
         onSubmit={onSubmit}
         className="
