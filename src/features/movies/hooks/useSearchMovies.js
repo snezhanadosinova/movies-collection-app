@@ -8,5 +8,6 @@ export const useSearchMovies = (query) => {
     queryFn: () => searchMovies(query),
 
     enabled: !!query,
+    placeholderData: (previousData) => previousData,
   });
 };

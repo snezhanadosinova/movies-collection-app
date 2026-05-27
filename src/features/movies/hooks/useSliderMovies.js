@@ -8,7 +8,6 @@ import { useMovieGenres } from "./useMovieGenres";
 export const useSliderMovies = () => {
   const { data: popularData, isLoading, isError } = usePopularMovies();
   const { data: genres = [] } = useMovieGenres();
-  console.log(popularData?.pages[0]?.results);
 
   const sliderMovies = popularData?.pages[0]?.results?.slice(0, 5) || [];
 
