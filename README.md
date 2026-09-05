@@ -98,6 +98,16 @@ yarn dev
 
 The application will be available at `http://localhost:5173`
 
+### 5. Run with Docker
+
+Make sure `.env.local` contains the variables listed above, then build and start the production container:
+
+```bash
+docker compose --env-file .env.local up --build
+```
+
+The application will be available at `http://localhost:5173`. Stop it with `Ctrl+C`, or run `docker compose down` from another terminal.
+
 ## 📦 Available Scripts
 
 - `npm run dev` - Start development server
