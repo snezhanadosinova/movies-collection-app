@@ -1,53 +1,91 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { addFavorite, removeFavorite } from "../services/favoritesService";
-
-import { useAuth } from "../../auth/context/useAuth";
+import { useAuth } from "@/features/auth/context/useAuth";
 
 export const useToggleFavorite = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  const uid = user?.uid;
+  const queryKey = ["favorites", uid];
+  const mutationKey = ["toggle-favorite", uid];
+
   return useMutation({
+    mutationKey,
+
     mutationFn: async ({ movieId, isFavorite }) => {
-      if (isFavorite) {
-        return removeFavorite(user.uid, movieId);
+      if (!uid) {
+        throw new Error("Please log in first.");
       }
 
-      return addFavorite(user.uid, movieId);
+      return isFavorite
+        ? removeFavorite(uid, movieId)
+        : addFavorite(uid, movieId);
     },
 
-    // 🔥 OPTIMISTIC UPDATE
     onMutate: async ({ movieId, isFavorite }) => {
-      await queryClient.cancelQueries(["favorites", user.uid]);
-
-      const previous = queryClient.getQueryData(["favorites", user.uid]);
-
-      const newFavorites = { ...(previous || {}) };
-
-      if (isFavorite) {
-        delete newFavorites[movieId];
-      } else {
-        newFavorites[movieId] = true;
+      if (!uid) {
+        throw new Error("Please log in first.");
       }
 
-      queryClient.setQueryData(["favorites", user.uid], newFavorites);
-
-      return { previous };
-    },
-
-    onError: (_err, _vars, context) => {
-      queryClient.setQueryData(["favorites", user.uid], context.previous);
-    },
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["favorite-movies"],
+      await queryClient.cancelQueries({
+        queryKey,
+        exact: true,
       });
 
-      queryClient.invalidateQueries({
-        queryKey: ["favorites", user.uid],
+      const previous = queryClient.getQueryData(queryKey);
+      const wasFavorite = Boolean(previous?.[movieId]);
+
+      queryClient.setQueryData(queryKey, (current = {}) => {
+        const next = { ...current };
+
+        if (isFavorite) {
+          delete next[movieId];
+        } else {
+          next[movieId] = true;
+        }
+
+        return next;
       });
+
+      return {
+        queryKey,
+        mutationKey,
+        wasFavorite,
+      };
+    },
+
+    onError: (_error, { movieId }, context) => {
+      if (!context) return;
+
+      queryClient.setQueryData(context.queryKey, (current = {}) => {
+        const next = { ...current };
+
+        if (context.wasFavorite) {
+          next[movieId] = true;
+        } else {
+          delete next[movieId];
+        }
+
+        return next;
+      });
+    },
+
+    onSettled: (_data, _error, _variables, context) => {
+      if (!context) return;
+
+      const pendingCount = queryClient.isMutating({
+        mutationKey: context.mutationKey,
+        exact: true,
+      });
+
+      if (pendingCount === 1) {
+        return queryClient.invalidateQueries({
+          queryKey: context.queryKey,
+          exact: true,
+        });
+      }
     },
   });
 };
