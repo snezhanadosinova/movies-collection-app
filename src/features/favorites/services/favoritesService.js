@@ -1,54 +1,17 @@
-import {
-  doc,
-  getDoc,
-  setDoc,
-  deleteField,
-} from "firebase/firestore";
-
-import { db } from "../../../lib/firebase";
-
-const getFavoritesRef = (uid) => {
-  return doc(db, "users", uid);
-};
-
 export const getUserFavorites = async (uid) => {
-  const docRef = getFavoritesRef(uid);
+  const firestore = await import("./favoritesFirestore");
 
-  const snapshot = await getDoc(docRef);
-
-  if (!snapshot.exists()) {
-    return {};
-  }
-
-  const data = snapshot.data();
-
-  return data.favorites || {};
+  return firestore.getUserFavorites(uid);
 };
 
 export const addFavorite = async (uid, movieId) => {
-  const docRef = getFavoritesRef(uid);
+  const firestore = await import("./favoritesFirestore");
 
-  await setDoc(
-    docRef,
-    {
-      favorites: {
-        [movieId]: true,
-      },
-    },
-    { merge: true },
-  );
+  return firestore.addFavorite(uid, movieId);
 };
 
 export const removeFavorite = async (uid, movieId) => {
-  const docRef = getFavoritesRef(uid);
+  const firestore = await import("./favoritesFirestore");
 
-  await setDoc(
-    docRef,
-    {
-      favorites: {
-        [movieId]: deleteField(),
-      },
-    },
-    { merge: true },
-  );
+  return firestore.removeFavorite(uid, movieId);
 };
