@@ -6,6 +6,7 @@ import {
 } from "firebase/auth";
 
 import { auth } from "@/lib/firebase";
+import { normalizeDisplayName, validateDisplayName } from "@/utils/displayName";
 
 export const registerUser = async ({
   email,
@@ -19,13 +20,10 @@ export const registerUser = async ({
     password,
   );
 
-  const fullName = `${firstName} ${lastName}`;
-
   await updateProfile(userCredential.user, {
-    displayName: fullName,
+    displayName: `${firstName} ${lastName}`,
   });
 
-  // ensure Firebase state is updated
   await userCredential.user.reload();
 
   return auth.currentUser;
@@ -45,15 +43,22 @@ export const logoutUser = async () => {
   await signOut(auth);
 };
 
-// optional future use
-export const updateUserProfile = async (data) => {
-  if (!auth.currentUser) return;
+export const updateUserProfile = async ({ displayName }) => {
+  const currentUser = auth.currentUser;
 
-  await updateProfile(auth.currentUser, {
-    displayName: `${data.firstName} ${data.lastName}`,
+  if (!currentUser) {
+    throw new Error("Please log in before updating your profile.");
+  }
+
+  const validationResult = validateDisplayName(displayName);
+
+  if (validationResult !== true) {
+    throw new Error(validationResult);
+  }
+
+  await updateProfile(currentUser, {
+    displayName: normalizeDisplayName(displayName),
   });
 
-  await auth.currentUser.reload();
-
-  return auth.currentUser;
+  return currentUser;
 };
