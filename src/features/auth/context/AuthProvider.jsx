@@ -24,14 +24,20 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  // FORCE refresh user (important for displayName updates)
   const refreshUser = async () => {
-    if (!auth.currentUser) return;
+    const currentUser = auth.currentUser;
 
-    await auth.currentUser.reload();
+    if (!currentUser) return;
 
-    // spread creates new reference → forces rerender
-    setUser({ ...auth.currentUser });
+    await currentUser.reload();
+
+    // Ignore a refresh that completed after logout or an account change.
+    if (auth.currentUser !== currentUser) return;
+
+    saveCachedAvatar(getInitials(currentUser.displayName || currentUser.email));
+
+    // Create a new reference so context consumers receive the update.
+    setUser({ ...currentUser });
   };
 
   return (
