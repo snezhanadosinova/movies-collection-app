@@ -7,6 +7,7 @@ import LoginPage from "@/features/auth/pages/LoginPage";
 import MovieDetailsPage from "@/features/movies/pages/MovieDetailsPage";
 import ProfilePage from "../features/profile/pages/ProfilePage";
 import FavoritesPage from "../features/favorites/pages/FavoritesPage";
+import ProtectedRoute from "@/routes/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -31,12 +32,20 @@ export const router = createBrowserRouter([
         element: <MovieDetailsPage />,
       },
       {
-        path: "/profile",
-        element: <ProfilePage />,
+        path: "profile",
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: "/favorites",
-        element: <FavoritesPage />,
+        path: "favorites",
+        element: (
+          <ProtectedRoute>
+            <FavoritesPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

@@ -3,11 +3,20 @@ import { getFavoriteMovies } from "../api/getFavoriteMovies";
 import { useFavorites } from "./useFavorites";
 
 export const useFavoriteMovies = () => {
-  const { data: favorites = {}, isLoading } = useFavorites();
+  const favoritesQuery = useFavorites();
 
-  return useQuery({
-    queryKey: ["favorite-movies", favorites],
-    queryFn: () => getFavoriteMovies(favorites),
-    enabled: !isLoading,
+  const moviesQuery = useQuery({
+    queryKey: ["favorite-movies", favoritesQuery.data],
+    queryFn: () => getFavoriteMovies(favoritesQuery.data),
+    enabled: favoritesQuery.isSuccess,
   });
+
+  return {
+    data: moviesQuery.data,
+    isLoading:
+      favoritesQuery.isPending ||
+      (favoritesQuery.isSuccess && moviesQuery.isPending),
+    isError: favoritesQuery.isError || moviesQuery.isError,
+    error: favoritesQuery.error ?? moviesQuery.error,
+  };
 };

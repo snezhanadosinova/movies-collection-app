@@ -5,7 +5,7 @@ import { getTmdbImageUrl } from "@/utils/tmdbImages";
 
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 import { useToggleFavorite } from "@/features/favorites/hooks/useToggleFavorite";
-import { useAuth } from "@/features/auth/context/AuthContext";
+import { useAuth } from "@/features/auth/context/useAuth";
 
 function MovieCard({ movie }) {
   const { user } = useAuth();

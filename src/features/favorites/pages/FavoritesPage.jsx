@@ -1,11 +1,20 @@
 import MovieCard from "@/components/movie/MovieCard";
 import { useFavoriteMovies } from "../hooks/useFavoriteMovies";
+import PageLoader from "../../../components/common/PageLoader";
 
 function FavoritesPage() {
-  const { data: movies = [], isLoading } = useFavoriteMovies();
+  const { data: movies = [], isLoading, isError } = useFavoriteMovies();
 
   if (isLoading) {
-    return <div className="p-6 text-white">Loading favorites...</div>;
+    return <PageLoader />;
+  }
+
+  if (isError) {
+    return (
+      <div className="p-6 text-red-400" role="alert">
+        Could not load favorites. Please try again later.
+      </div>
+    );
   }
 
   if (!movies.length) {

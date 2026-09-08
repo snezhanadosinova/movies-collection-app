@@ -1,19 +1,20 @@
-import { Navigate } from "react-router-dom";
-import { useAuth } from "@/features/auth/context/AuthContext";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/features/auth/context/useAuth";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
-  if (loading) {
+  if (!loading && !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        Loading...
-      </div>
+      <Navigate
+        to="/login"
+        replace
+        state={{
+          from: location.pathname + location.search + location.hash,
+        }}
+      />
     );
-  }
-
-  if (!user) {
-    return <Navigate to="/login" />;
   }
 
   return children;

@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserFavorites } from "../services/favoritesService";
-import { useAuth } from "../../auth/context/AuthContext";
+import { useAuth } from "@/features/auth/context/useAuth";
 
 export const useFavorites = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   return useQuery({
     queryKey: ["favorites", user?.uid],
     queryFn: () => getUserFavorites(user.uid),
-    enabled: !!user,
+    enabled: !loading && !!user,
   });
 };

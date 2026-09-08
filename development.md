@@ -321,12 +321,6 @@ Directory structure organized by feature with each feature containing:
 - **Features**: Caching, loading/error states, automatic refetching
 - **Used By**: MovieDetailsPage
 
-##### `hooks/usePopularMovies.js`
-
-- **Purpose**: React Query hook for fetching popular movies
-- **Features**: Pagination support, caching, error handling
-- **Used By**: HomePage (legacy, consider using useInfinitePopularMovies)
-
 ##### `hooks/useSearchMovies.js`
 
 - **Purpose**: React Query hook for searching movies
@@ -519,12 +513,6 @@ Directory structure organized by feature with each feature containing:
 
 ```
 User Registration/Login → Firebase Auth → AuthContext → Protected Routes → App Access
-```
-
-### Movie Discovery Flow
-
-```
-HomePage → usePopularMovies/useSearchMovies → TMDB API → MovieGrid/MovieCard → Navigation
 ```
 
 ### Genre Filtering Flow

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -9,6 +9,16 @@ import { loginUser } from "../services/authService";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const requestedPath = location.state?.from;
+
+  const redirectTo =
+    typeof requestedPath === "string" &&
+    requestedPath.startsWith("/") &&
+    !requestedPath.startsWith("//")
+      ? requestedPath
+      : "/";
 
   const {
     register,
@@ -22,7 +32,7 @@ function LoginPage() {
     try {
       await loginUser(data.email, data.password);
       toast.success("Logged in successfully");
-      navigate("/");
+      navigate(redirectTo, { replace: true });
     } catch (error) {
       toast.error(error.message);
     }

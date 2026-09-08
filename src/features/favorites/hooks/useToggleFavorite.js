@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { addFavorite, removeFavorite } from "../services/favoritesService";
 
-import { useAuth } from "../../auth/context/AuthContext";
+import { useAuth } from "../../auth/context/useAuth";
 
 export const useToggleFavorite = () => {
   const queryClient = useQueryClient();
