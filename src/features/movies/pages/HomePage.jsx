@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import MovieGrid from "@/components/movie/MovieGrid";
 import MovieSearch from "@/components/movie/MovieSearch";
 import GenreFilter from "@/components/movie/GenreFilter";
@@ -15,13 +17,36 @@ function HomePage() {
     setSelectedGenre,
     movies,
     isLoading,
+    isFetching,
     isError,
+    isRefreshError,
+    refetch,
     hasNextPage,
     isFetchingNextPage,
+    isFetchNextPageError,
     fetchNextPage,
     pageTitle,
     isSearching,
   } = useMovieFilter();
+
+  const handleLoadMore = useCallback(() => {
+    if (isSearching || !hasNextPage || isFetching) {
+      return;
+    }
+
+    void fetchNextPage({ cancelRefetch: false });
+  }, [isSearching, hasNextPage, isFetching, fetchNextPage]);
+
+  const canAutoLoad =
+    !isSearching &&
+    hasNextPage &&
+    !isFetching &&
+    !isFetchNextPageError &&
+    !isRefreshError;
+
+  const retryButtonClassName =
+    "mt-3 rounded-lg bg-red-500 px-4 py-2 text-white " +
+    "transition hover:bg-red-600 disabled:opacity-50";
 
   return (
     <div className="mx-auto max-w-7xl p-10">
@@ -40,30 +65,69 @@ function HomePage() {
       {isLoading && <MovieGridSkeleton />}
 
       {isError && (
-        <div className="p-10 text-red-500" role="alert">
-          Failed to load movies.
+        <div className="py-6">
+          <p className="text-red-400" role="alert">
+            Failed to load movies.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => refetch({ cancelRefetch: false })}
+            disabled={isFetching}
+            className={retryButtonClassName}
+          >
+            Retry
+          </button>
         </div>
       )}
 
       {!isLoading && !isError && (
         <>
-          {movies?.length > 0 ? (
+          {isRefreshError && (
+            <div className="mb-6">
+              <p className="text-red-400" role="alert">
+                Could not refresh movies. Showing previously loaded results.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => refetch({ cancelRefetch: false })}
+                disabled={isFetching}
+                className={retryButtonClassName}
+              >
+                {isFetching ? "Retrying..." : "Retry"}
+              </button>
+            </div>
+          )}
+
+          {movies.length > 0 ? (
             <>
               <MovieGrid movies={movies} />
 
-              {!isSearching && hasNextPage && (
-                <InfiniteScrollTrigger
-                  onIntersect={() => {
-                    if (!isFetchingNextPage) {
-                      fetchNextPage();
-                    }
-                  }}
-                />
+              {canAutoLoad && (
+                <InfiniteScrollTrigger onIntersect={handleLoadMore} />
               )}
 
-              {!isSearching && isFetchingNextPage && (
+              {isFetchingNextPage && (
                 <div className="mt-6">
                   <MovieGridSkeleton count={4} />
+                </div>
+              )}
+
+              {isFetchNextPageError && (
+                <div className="mt-6 text-center">
+                  <p className="text-red-400" role="alert">
+                    Could not load more movies.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={handleLoadMore}
+                    disabled={isFetching}
+                    className={retryButtonClassName}
+                  >
+                    {isFetching ? "Retrying..." : "Retry"}
+                  </button>
                 </div>
               )}
             </>

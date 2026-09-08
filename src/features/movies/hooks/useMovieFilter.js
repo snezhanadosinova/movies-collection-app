@@ -20,44 +20,26 @@ export const useMovieFilter = () => {
   const searchQuery = useSearchMovies(debouncedSearch);
   const discoverQuery = useInfiniteDiscoverMovies(selectedGenre);
 
-  // Remove overlapping movies from paginated results.
-  const popularMovies = uniqueMovies(
-    popularQuery.data?.pages.flatMap((page) => page.results) ?? [],
+  const paginationQuery = selectedGenre ? discoverQuery : popularQuery;
+
+  const activeQuery = isSearching ? searchQuery : paginationQuery;
+
+  const movies = uniqueMovies(
+    isSearching
+      ? (searchQuery.data ?? [])
+      : (paginationQuery.data?.pages.flatMap((page) => page.results) ?? []),
   );
 
-  const discoveredMovies = uniqueMovies(
-    discoverQuery.data?.pages.flatMap((page) => page.results) ?? [],
-  );
+  const isFetchNextPageError =
+    !isSearching && paginationQuery.isFetchNextPageError;
 
-  const movies = isSearching
-    ? uniqueMovies(searchQuery.data ?? [])
-    : selectedGenre
-      ? discoveredMovies
-      : popularMovies;
+  // Only replace the results with an error when no data is available.
+  const isError = activeQuery.isError && activeQuery.data === undefined;
 
-  const isLoading = isSearching
-    ? searchQuery.isLoading
-    : selectedGenre
-      ? discoverQuery.isLoading
-      : popularQuery.isLoading;
-
-  const isError = isSearching
-    ? searchQuery.isError
-    : selectedGenre
-      ? discoverQuery.isError
-      : popularQuery.isError;
-
-  const hasNextPage = selectedGenre
-    ? discoverQuery.hasNextPage
-    : popularQuery.hasNextPage;
-
-  const isFetchingNextPage = selectedGenre
-    ? discoverQuery.isFetchingNextPage
-    : popularQuery.isFetchingNextPage;
-
-  const fetchNextPage = selectedGenre
-    ? discoverQuery.fetchNextPage
-    : popularQuery.fetchNextPage;
+  const isRefreshError =
+    activeQuery.isError &&
+    activeQuery.data !== undefined &&
+    !isFetchNextPageError;
 
   const pageTitle = isSearching
     ? "Search Results"
@@ -73,12 +55,16 @@ export const useMovieFilter = () => {
     isSearching,
 
     movies,
-    isLoading,
+    isLoading: activeQuery.isLoading,
+    isFetching: activeQuery.isFetching,
     isError,
+    isRefreshError,
+    refetch: activeQuery.refetch,
 
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
+    hasNextPage: !isSearching && paginationQuery.hasNextPage,
+    isFetchingNextPage: !isSearching && paginationQuery.isFetchingNextPage,
+    isFetchNextPageError,
+    fetchNextPage: paginationQuery.fetchNextPage,
 
     pageTitle,
   };
