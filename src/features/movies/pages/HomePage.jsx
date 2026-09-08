@@ -3,6 +3,8 @@ import MovieSearch from "@/components/movie/MovieSearch";
 import GenreFilter from "@/components/movie/GenreFilter";
 import InfiniteScrollTrigger from "@/components/common/InfiniteScrollTrigger";
 import MovieSlider from "@/components/movie/MovieSlider";
+import MovieGridSkeleton from "@/components/movie/MovieGridSkeleton";
+
 import { useMovieFilter } from "../hooks/useMovieFilter";
 
 function HomePage() {
@@ -24,6 +26,7 @@ function HomePage() {
   return (
     <div className="mx-auto max-w-7xl p-10">
       <MovieSlider />
+
       <div className="mb-10 flex flex-col gap-4 md:flex-row">
         <div className="flex-1">
           <MovieSearch value={search} onChange={setSearch} />
@@ -32,34 +35,36 @@ function HomePage() {
         <GenreFilter value={selectedGenre} onChange={setSelectedGenre} />
       </div>
 
-      {/* Title */}
       <h1 className="mb-8 text-4xl font-bold">{pageTitle}</h1>
 
-      {/* Loading state */}
-      {isLoading && <div className="p-10">Loading movies...</div>}
+      {isLoading && <MovieGridSkeleton />}
 
-      {/* Error state */}
       {isError && (
-        <div className="p-10 text-red-500">Failed to load movies.</div>
+        <div className="p-10 text-red-500" role="alert">
+          Failed to load movies.
+        </div>
       )}
 
-      {/* Movies */}
       {!isLoading && !isError && (
         <>
           {movies?.length > 0 ? (
             <>
               <MovieGrid movies={movies} />
-              {!isSearching && (
+
+              {!isSearching && hasNextPage && (
                 <InfiniteScrollTrigger
                   onIntersect={() => {
-                    if (hasNextPage && !isFetchingNextPage) {
+                    if (!isFetchingNextPage) {
                       fetchNextPage();
                     }
                   }}
                 />
               )}
-              {isFetchingNextPage && (
-                <div className="py-10 text-center">Loading more movies...</div>
+
+              {!isSearching && isFetchingNextPage && (
+                <div className="mt-6">
+                  <MovieGridSkeleton count={4} />
+                </div>
               )}
             </>
           ) : (
