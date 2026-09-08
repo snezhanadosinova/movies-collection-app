@@ -2,12 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 
 import MainLayout from "@/components/layout/MainLayout";
 import HomePage from "@/features/movies/pages/HomePage";
-import RegisterPage from "@/features/auth/pages/RegisterPage";
-import LoginPage from "@/features/auth/pages/LoginPage";
-import MovieDetailsPage from "@/features/movies/pages/MovieDetailsPage";
-import ProfilePage from "../features/profile/pages/ProfilePage";
-import FavoritesPage from "../features/favorites/pages/FavoritesPage";
 import ProtectedRoute from "@/routes/ProtectedRoute";
+
+import {
+  RegisterRoute,
+  LoginRoute,
+  MovieDetailsRoute,
+  ProfileRoute,
+  FavoritesRoute,
+} from "./RoutePages";
 
 export const router = createBrowserRouter([
   {
@@ -21,21 +24,21 @@ export const router = createBrowserRouter([
       },
       {
         path: "register",
-        element: <RegisterPage />,
+        element: <RegisterRoute />,
       },
       {
         path: "login",
-        element: <LoginPage />,
+        element: <LoginRoute />,
       },
       {
         path: "movies/:id",
-        element: <MovieDetailsPage />,
+        element: <MovieDetailsRoute />,
       },
       {
         path: "profile",
         element: (
           <ProtectedRoute>
-            <ProfilePage />
+            <ProfileRoute />
           </ProtectedRoute>
         ),
       },
@@ -43,7 +46,7 @@ export const router = createBrowserRouter([
         path: "favorites",
         element: (
           <ProtectedRoute>
-            <FavoritesPage />
+            <FavoritesRoute />
           </ProtectedRoute>
         ),
       },
