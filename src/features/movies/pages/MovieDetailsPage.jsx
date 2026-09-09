@@ -82,9 +82,12 @@ function MovieDetailsPage() {
           </p>
         )}
 
-        <MovieCastSection key={movie.id} cast={cast} />
+        <MovieCastSection key={`cast-${movie.id}`} cast={cast} />
 
-        <MovieTrailerSection key={trailer?.key || movie.id} trailer={trailer} />
+        <MovieTrailerSection
+          key={`trailer-${movie.id}-${trailer?.key ?? "none"}`}
+          trailer={trailer}
+        />
 
         <MovieSimilarSection similar={relatedMovies} />
       </div>

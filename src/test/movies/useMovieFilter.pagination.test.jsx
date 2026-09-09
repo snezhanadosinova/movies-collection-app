@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { describe, expect, it, vi } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 
 import { useMovieFilter } from "@/features/movies/hooks/useMovieFilter";
 import { getPopularMovies } from "@/features/movies/api/tmdbApi";
@@ -45,16 +46,17 @@ describe("useMovieFilter pagination", () => {
 
     function Wrapper({ children }) {
       return (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <MemoryRouter>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </MemoryRouter>
       );
     }
 
-    const { result, unmount } = renderHook(
-      () => useMovieFilter(),
-      { wrapper: Wrapper },
-    );
+    const { result, unmount } = renderHook(() => useMovieFilter(), {
+      wrapper: Wrapper,
+    });
 
     try {
       await waitFor(() => {
@@ -88,10 +90,7 @@ describe("useMovieFilter pagination", () => {
 
       await waitFor(() => {
         expect(result.current.isFetchNextPageError).toBe(false);
-        expect(result.current.movies).toEqual([
-          firstMovie,
-          secondMovie,
-        ]);
+        expect(result.current.movies).toEqual([firstMovie, secondMovie]);
         expect(result.current.hasNextPage).toBe(false);
       });
 

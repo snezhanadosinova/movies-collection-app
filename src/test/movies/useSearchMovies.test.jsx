@@ -1,15 +1,11 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useSearchMovies } from "@/features/movies/hooks/useSearchMovies";
+import {
+  SEARCH_PAGE_LIMIT,
+  useSearchMovies,
+} from "@/features/movies/hooks/useSearchMovies";
 import { searchMovies } from "@/features/movies/api/tmdbApi";
 
 vi.mock("@/features/movies/api/tmdbApi", () => ({
@@ -20,9 +16,7 @@ let queryClient;
 
 function Wrapper({ children }) {
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
 
@@ -33,7 +27,7 @@ beforeEach(() => {
     defaultOptions: {
       queries: {
         retry: false,
-        staleTime: 5 * 60 * 1000,
+        staleTime: Infinity,
       },
     },
   });
@@ -45,12 +39,11 @@ afterEach(() => {
 
 describe("useSearchMovies", () => {
   it.each(["", " ", "a", " a "])(
-    "does not search when the normalized query is too short: %j",
+    "does not search for a short normalized query: %j",
     async (query) => {
-      const { result } = renderHook(
-        () => useSearchMovies(query),
-        { wrapper: Wrapper },
-      );
+      const { result } = renderHook(() => useSearchMovies(query), {
+        wrapper: Wrapper,
+      });
 
       await act(async () => {});
 
@@ -59,111 +52,172 @@ describe("useSearchMovies", () => {
     },
   );
 
-  it("trims the query and reuses fresh cached results", async () => {
-    const movies = [{ id: 550, title: "Batman" }];
+  it("trims the query and reuses cached results", async () => {
+    const movies = [{ id: 1, title: "Alien" }];
 
-    vi.mocked(searchMovies).mockResolvedValue(movies);
+    vi.mocked(searchMovies).mockResolvedValue({
+      page: 1,
+      total_pages: 1,
+      results: movies,
+    });
 
     const { result, rerender } = renderHook(
       ({ query }) => useSearchMovies(query),
       {
         wrapper: Wrapper,
-        initialProps: { query: " Batman " },
+        initialProps: { query: " Alien " },
       },
     );
 
     await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
+      expect(result.current.data).toEqual(movies);
     });
 
     expect(searchMovies).toHaveBeenCalledWith(
-      "Batman",
+      "Alien",
       expect.any(AbortSignal),
+      1,
     );
 
-    expect(result.current.data).toEqual(movies);
-
-    rerender({ query: "Batman" });
+    rerender({ query: "Alien" });
 
     await act(async () => {});
 
     expect(searchMovies).toHaveBeenCalledTimes(1);
-    expect(result.current.data).toEqual(movies);
   });
 
-  it("does not display previous results while a new search is pending", async () => {
-    const previousMovies = [{ id: 550, title: "Batman" }];
-    const nextMovies = [{ id: 100, title: "Alien" }];
+  it("shows the first page while automatically loading the next", async () => {
+    const firstMovie = { id: 1 };
+    const secondMovie = { id: 2 };
 
-    let resolveSearch;
+    let resolveSecondPage;
 
-    const pendingSearch = new Promise((resolve) => {
-      resolveSearch = resolve;
+    const pendingPage = new Promise((resolve) => {
+      resolveSecondPage = resolve;
     });
 
     vi.mocked(searchMovies)
-      .mockResolvedValueOnce(previousMovies)
-      .mockReturnValueOnce(pendingSearch);
+      .mockResolvedValueOnce({
+        page: 1,
+        total_pages: 2,
+        results: [firstMovie],
+      })
+      .mockReturnValueOnce(pendingPage);
 
-    const { result, rerender, unmount } = renderHook(
-      ({ query }) => useSearchMovies(query),
-      {
-        wrapper: Wrapper,
-        initialProps: { query: "Batman" },
-      },
-    );
+    const { result, unmount } = renderHook(() => useSearchMovies("Alien"), {
+      wrapper: Wrapper,
+    });
 
     try {
       await waitFor(() => {
-        expect(result.current.data).toEqual(previousMovies);
-      });
-
-      rerender({ query: "Alien" });
-
-      await waitFor(() => {
-        expect(searchMovies).toHaveBeenCalledWith(
-          "Alien",
-          expect.any(AbortSignal),
-        );
-
-        expect(result.current.isLoading).toBe(true);
-        expect(result.current.data).toBeUndefined();
+        expect(searchMovies).toHaveBeenCalledTimes(2);
+        expect(result.current.data).toEqual([firstMovie]);
+        expect(result.current.isSearchingMore).toBe(true);
       });
 
       await act(async () => {
-        resolveSearch(nextMovies);
-        await pendingSearch;
+        resolveSecondPage({
+          page: 2,
+          total_pages: 2,
+          results: [secondMovie],
+        });
+
+        await pendingPage;
       });
 
       await waitFor(() => {
-        expect(result.current.data).toEqual(nextMovies);
+        expect(result.current.data).toEqual([firstMovie, secondMovie]);
+
+        expect(result.current.isSearchingMore).toBe(false);
+        expect(result.current.searchLimitReached).toBe(false);
       });
     } finally {
-      resolveSearch(nextMovies);
+      resolveSecondPage({
+        page: 2,
+        total_pages: 2,
+        results: [],
+      });
+
       unmount();
     }
   });
 
-  it("aborts the signal when the search is no longer observed", async () => {
+  it("stops at the configured page limit", async () => {
     vi.mocked(searchMovies).mockImplementation(
-      () => new Promise(() => {}),
+      async (_query, _signal, page) => ({
+        page,
+        total_pages: 20,
+        results: [{ id: page }],
+      }),
     );
 
-    const { unmount } = renderHook(
-      () => useSearchMovies("Batman"),
-      { wrapper: Wrapper },
+    const { result } = renderHook(() => useSearchMovies("Love"), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current.searchLimitReached).toBe(true);
+      expect(result.current.isFetching).toBe(false);
+    });
+
+    expect(searchMovies).toHaveBeenCalledTimes(SEARCH_PAGE_LIMIT);
+    expect(result.current.data).toHaveLength(SEARCH_PAGE_LIMIT);
+    expect(result.current.isSearchingMore).toBe(false);
+  });
+
+  it("preserves loaded results and stops automatic loading after a failure", async () => {
+    const firstMovie = { id: 1 };
+
+    vi.mocked(searchMovies)
+      .mockResolvedValueOnce({
+        page: 1,
+        total_pages: 3,
+        results: [firstMovie],
+      })
+      .mockRejectedValueOnce(new Error("Page failed"));
+
+    const { result } = renderHook(() => useSearchMovies("Alien"), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true);
+    });
+
+    expect(result.current.data).toEqual([firstMovie]);
+    expect(result.current.isSearchingMore).toBe(false);
+    expect(searchMovies).toHaveBeenCalledTimes(2);
+  });
+
+  it("aborts the previous query when the search text changes", async () => {
+    vi.mocked(searchMovies)
+      .mockImplementationOnce(() => new Promise(() => {}))
+      .mockResolvedValueOnce({
+        page: 1,
+        total_pages: 1,
+        results: [{ id: 2 }],
+      });
+
+    const { result, rerender } = renderHook(
+      ({ query }) => useSearchMovies(query),
+      {
+        wrapper: Wrapper,
+        initialProps: { query: "Alien" },
+      },
     );
 
     await waitFor(() => {
       expect(searchMovies).toHaveBeenCalledTimes(1);
     });
 
-    const signal = vi.mocked(searchMovies).mock.calls[0][1];
+    const previousSignal = vi.mocked(searchMovies).mock.calls[0][1];
 
-    expect(signal.aborted).toBe(false);
+    rerender({ query: "Batman" });
 
-    unmount();
+    await waitFor(() => {
+      expect(result.current.data).toEqual([{ id: 2 }]);
+    });
 
-    expect(signal.aborted).toBe(true);
+    expect(previousSignal.aborted).toBe(true);
   });
 });

@@ -27,6 +27,9 @@ function HomePage() {
     fetchNextPage,
     pageTitle,
     isSearching,
+    isSearchingMore,
+    searchLimitReached,
+    isSearchPaused,
   } = useMovieFilter();
 
   const handleLoadMore = useCallback(() => {
@@ -48,6 +51,12 @@ function HomePage() {
     "mt-3 rounded-lg bg-red-500 px-4 py-2 text-white " +
     "transition hover:bg-red-600 disabled:opacity-50";
 
+  const isWaitingForSearch = isSearching && (isSearchingMore || isSearchPaused);
+
+  const emptyMessage = searchLimitReached
+    ? "No matches in the checked results. Try a more specific title or another genre."
+    : "No movies found for these filters.";
+
   return (
     <div className="mx-auto max-w-7xl p-10">
       <MovieSlider />
@@ -62,6 +71,12 @@ function HomePage() {
 
       <h1 className="mb-8 text-4xl font-bold">{pageTitle}</h1>
 
+      {isSearchPaused && (
+        <p className="mb-6 text-amber-300" role="status">
+          Search is paused. Waiting for an internet connection.
+        </p>
+      )}
+
       {isLoading && <MovieGridSkeleton />}
 
       {isError && (
@@ -73,7 +88,7 @@ function HomePage() {
           <button
             type="button"
             onClick={() => refetch({ cancelRefetch: false })}
-            disabled={isFetching}
+            disabled={isFetching || isSearchPaused}
             className={retryButtonClassName}
           >
             Retry
@@ -86,13 +101,15 @@ function HomePage() {
           {isRefreshError && (
             <div className="mb-6">
               <p className="text-red-400" role="alert">
-                Could not refresh movies. Showing previously loaded results.
+                {isSearching
+                  ? "Could not finish the search. Showing available results."
+                  : "Could not refresh movies. Showing previously loaded results."}
               </p>
 
               <button
                 type="button"
                 onClick={() => refetch({ cancelRefetch: false })}
-                disabled={isFetching}
+                disabled={isFetching || isSearchPaused}
                 className={retryButtonClassName}
               >
                 {isFetching ? "Retrying..." : "Retry"}
@@ -101,38 +118,51 @@ function HomePage() {
           )}
 
           {movies.length > 0 ? (
-            <>
-              <MovieGrid movies={movies} />
+            <MovieGrid movies={movies} />
+          ) : isWaitingForSearch ? (
+            <MovieGridSkeleton />
+          ) : !isRefreshError ? (
+            <p>{emptyMessage}</p>
+          ) : null}
 
-              {canAutoLoad && (
-                <InfiniteScrollTrigger onIntersect={handleLoadMore} />
-              )}
+          {isSearchingMore && !isSearchPaused && (
+            <p className="mt-6 text-center text-zinc-400" role="status">
+              Searching more results...
+            </p>
+          )}
 
-              {isFetchingNextPage && (
-                <div className="mt-6">
-                  <MovieGridSkeleton count={4} />
-                </div>
-              )}
+          {isSearching && searchLimitReached && movies.length > 0 && (
+            <p className="mt-6 text-zinc-400" role="status">
+              Showing matches from the first 5 result pages. Use a more specific
+              title to narrow the search.
+            </p>
+          )}
 
-              {isFetchNextPageError && (
-                <div className="mt-6 text-center">
-                  <p className="text-red-400" role="alert">
-                    Could not load more movies.
-                  </p>
+          {movies.length > 0 && canAutoLoad && (
+            <InfiniteScrollTrigger onIntersect={handleLoadMore} />
+          )}
 
-                  <button
-                    type="button"
-                    onClick={handleLoadMore}
-                    disabled={isFetching}
-                    className={retryButtonClassName}
-                  >
-                    {isFetching ? "Retrying..." : "Retry"}
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <p>No movies found.</p>
+          {!isSearching && isFetchingNextPage && (
+            <div className="mt-6">
+              <MovieGridSkeleton count={4} />
+            </div>
+          )}
+
+          {!isSearching && isFetchNextPageError && (
+            <div className="mt-6 text-center">
+              <p className="text-red-400" role="alert">
+                Could not load more movies.
+              </p>
+
+              <button
+                type="button"
+                onClick={handleLoadMore}
+                disabled={isFetching}
+                className={retryButtonClassName}
+              >
+                {isFetching ? "Retrying..." : "Retry"}
+              </button>
+            </div>
           )}
         </>
       )}

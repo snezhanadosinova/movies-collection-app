@@ -27,15 +27,16 @@ export const getMovieDetails = async (id, signal) => {
   return data;
 };
 
-export const searchMovies = async (query, signal) => {
+export const searchMovies = async (query, signal, page = 1) => {
   const { data } = await api.get("/search/movie", {
     params: {
       query,
+      page,
     },
     signal,
   });
 
-  return data.results;
+  return data;
 };
 
 export const getMovieGenres = async () => {
