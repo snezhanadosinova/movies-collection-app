@@ -32,6 +32,7 @@ export const useMovieFilter = () => {
       {
         replace: true,
         preventScrollReset: true,
+        flushSync: true,
       },
     );
   };
