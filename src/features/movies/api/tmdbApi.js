@@ -16,10 +16,13 @@ export const getTrendingMovies = async () => {
   return data.results;
 };
 
-export const getMovieDetails = async (id) => {
-  const { data } = await api.get(
-    `/movie/${id}?append_to_response=credits,videos,similar`,
-  );
+export const getMovieDetails = async (id, signal) => {
+  const { data } = await api.get(`/movie/${id}`, {
+    params: {
+      append_to_response: "credits,videos,recommendations,similar",
+    },
+    signal,
+  });
 
   return data;
 };

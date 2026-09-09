@@ -1,38 +1,58 @@
-/**
- * Movie Similar Section Component
- */
 import { Link } from "react-router-dom";
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
 
-export function MovieSimilarSection({ similar }) {
-  if (!similar || similar.length === 0) return null;
-
+export function MovieSimilarSection({ similar = [] }) {
   return (
-    <div className="mx-auto max-w-7xl p-10">
-      <h2 className="mb-4 text-2xl font-bold">Similar Movies</h2>
+    <section aria-labelledby="related-heading">
+      <h2 id="related-heading" className="text-2xl font-bold">
+        More like this
+      </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:grid-cols-4">
-        {similar.slice(0, 4).map((m) => (
-          <Link key={m.id} to={`/movies/${m.id}`} className="group">
-            <div className="overflow-hidden rounded-lg transition group-hover:scale-105">
-              <img
-                src={getTmdbImageUrl(m.poster_path, "w300")}
-                alt={m.title}
-                className="h-[300px] w-full object-cover"
-                loading="lazy"
-              />
+      <p className="mt-2 text-sm text-zinc-400">Suggestions from TMDB</p>
 
-              <div className="p-2">
-                <p className="line-clamp-1 text-sm font-semibold">{m.title}</p>
+      {similar.length === 0 ? (
+        <p className="mt-5 text-zinc-400">No suggestions are available yet.</p>
+      ) : (
+        <ul className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {similar.map((movie) => (
+            <li key={movie.id}>
+              <Link
+                to={`/movies/${movie.id}`}
+                className="group block rounded-xl
+                           focus-visible:outline-2
+                           focus-visible:outline-offset-4
+                           focus-visible:outline-red-400"
+              >
+                <div className="aspect-[2/3] overflow-hidden rounded-xl bg-zinc-900">
+                  {movie.poster_path ? (
+                    <img
+                      src={getTmdbImageUrl(movie.poster_path)}
+                      alt=""
+                      loading="lazy"
+                      width="500"
+                      height="750"
+                      className="h-full w-full object-cover transition
+                                 group-hover:opacity-80"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center p-3 text-center text-sm text-zinc-400">
+                      Poster unavailable
+                    </div>
+                  )}
+                </div>
 
-                <p className="text-xs text-zinc-400">
-                  ⭐ {m.vote_average?.toFixed(1)}
+                <h3 className="mt-3 line-clamp-2 text-sm font-semibold">
+                  {movie.title || "Untitled movie"}
+                </h3>
+
+                <p className="mt-1 text-sm text-zinc-400">
+                  {movie.release_date?.slice(0, 4) || "Year unavailable"}
                 </p>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
