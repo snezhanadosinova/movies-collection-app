@@ -29,6 +29,15 @@ vi.mock("@/hooks/useDebounce", () => ({
   useDebounce: (value) => value,
 }));
 
+vi.mock("@/features/movies/hooks/useMovieGenres", () => ({
+  useMovieGenres: () => ({
+    data: [
+      { id: 27, name: "Horror" },
+      { id: 28, name: "Action" },
+    ],
+  }),
+}));
+
 beforeEach(() => {
   const queryState = {
     isLoading: false,

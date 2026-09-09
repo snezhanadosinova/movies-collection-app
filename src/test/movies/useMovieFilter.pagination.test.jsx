@@ -12,6 +12,15 @@ vi.mock("@/features/movies/api/tmdbApi", () => ({
   searchMovies: vi.fn(),
 }));
 
+vi.mock("@/features/movies/hooks/useMovieGenres", () => ({
+  useMovieGenres: () => ({
+    data: [
+      { id: 27, name: "Horror" },
+      { id: 28, name: "Action" },
+    ],
+  }),
+}));
+
 describe("useMovieFilter pagination", () => {
   it("preserves loaded movies after a next-page failure and appends them on retry", async () => {
     const queryClient = new QueryClient({

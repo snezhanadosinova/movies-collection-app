@@ -26,6 +26,15 @@ vi.mock("@/features/movies/hooks/useInfiniteDiscoverMovies", () => ({
   }),
 }));
 
+vi.mock("@/features/movies/hooks/useMovieGenres", () => ({
+  useMovieGenres: () => ({
+    data: [
+      { id: 27, name: "Horror" },
+      { id: 28, name: "Action" },
+    ],
+  }),
+}));
+
 describe("useMovieFilter search integration", () => {
   it("finds a matching genre on the second search page", async () => {
     const queryClient = new QueryClient({

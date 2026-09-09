@@ -4,6 +4,7 @@ import {
   MIN_SEARCH_LENGTH,
   useSearchMovies,
 } from "@/features/movies/hooks/useSearchMovies";
+import { useMovieGenres } from "@/features/movies/hooks/useMovieGenres";
 import { useInfiniteDiscoverMovies } from "@/features/movies/hooks/useInfiniteDiscoverMovies";
 import { useInfinitePopularMovies } from "@/features/movies/hooks/useInfinitePopularMovies";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -59,12 +60,13 @@ export const useMovieFilter = () => {
   const debouncedSearch = useDebounce(search.trim());
   const isSearching = debouncedSearch.length >= MIN_SEARCH_LENGTH;
 
+  const { data: genres = [] } = useMovieGenres();
+
   const popularQuery = useInfinitePopularMovies();
   const searchQuery = useSearchMovies(debouncedSearch);
   const discoverQuery = useInfiniteDiscoverMovies(selectedGenre);
 
   const paginationQuery = selectedGenre ? discoverQuery : popularQuery;
-
   const activeQuery = isSearching ? searchQuery : paginationQuery;
 
   const sourceMovies = isSearching
@@ -91,10 +93,16 @@ export const useMovieFilter = () => {
     activeQuery.data !== undefined &&
     !isFetchNextPageError;
 
+  const selectedGenreName = genres.find(
+    (genre) => String(genre.id) === selectedGenre,
+  )?.name;
+
   const pageTitle = isSearching
     ? "Search Results"
     : selectedGenre
-      ? `${selectedGenre} Movies`
+      ? selectedGenreName
+        ? `${selectedGenreName} Movies`
+        : "Filtered Movies"
       : "Popular Movies";
 
   return {
@@ -117,7 +125,7 @@ export const useMovieFilter = () => {
     fetchNextPage: paginationQuery.fetchNextPage,
 
     pageTitle,
-    
+
     isSearchingMore: isSearching && searchQuery.isSearchingMore,
     searchLimitReached: isSearching && searchQuery.searchLimitReached,
     isSearchPaused: isSearching && searchQuery.isSearchPaused,
