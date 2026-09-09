@@ -7,7 +7,11 @@ import { useAuth } from "@/features/auth/context/useAuth";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 import { useToggleFavorite } from "@/features/favorites/hooks/useToggleFavorite";
 
-export default function FavoriteButton({ movieId }) {
+export default function FavoriteButton({
+  movieId,
+  movieTitle,
+  compact = false,
+}) {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const favoritesQuery = useFavorites();
@@ -20,8 +24,7 @@ export default function FavoriteButton({ movieId }) {
 
   const isFavorite = Boolean(favoritesQuery.data?.[movieId]);
   const isPending = mutation.isPending || pendingCount > 0;
-  const isChecking =
-    loading || (Boolean(user) && favoritesQuery.isPending);
+  const isChecking = loading || (Boolean(user) && favoritesQuery.isPending);
   const hasError = Boolean(user) && favoritesQuery.isError;
 
   const handleClick = () => {
@@ -64,31 +67,40 @@ export default function FavoriteButton({ movieId }) {
           ? "Remove from favorites"
           : "Add to favorites";
 
+  const accessibleLabel = movieTitle ? `${label}: ${movieTitle}` : label;
+
+  const baseClassName =
+    "inline-flex items-center justify-center transition " +
+    "focus-visible:outline-2 focus-visible:outline-offset-4 " +
+    "focus-visible:outline-red-400 " +
+    "disabled:cursor-not-allowed disabled:opacity-60";
+
+  const variantClassName = compact
+    ? "h-11 w-11 rounded-full bg-black/80 text-white backdrop-blur hover:bg-zinc-800"
+    : "min-h-12 w-full gap-3 rounded-xl bg-red-500 px-5 py-3 font-semibold text-white hover:bg-red-600 sm:w-auto sm:min-w-60";
+
   return (
     <button
       type="button"
       onClick={handleClick}
       disabled={
-        isChecking ||
-        isPending ||
-        (hasError && favoritesQuery.isFetching)
+        isChecking || isPending || (hasError && favoritesQuery.isFetching)
       }
+      aria-label={accessibleLabel}
       aria-pressed={isChecking || hasError ? undefined : isFavorite}
-      className="inline-flex min-h-12 w-full items-center justify-center
-                 gap-3 rounded-xl bg-red-500 px-5 py-3 font-semibold
-                 text-white transition hover:bg-red-600
-                 focus-visible:outline-2 focus-visible:outline-offset-4
-                 focus-visible:outline-red-400
-                 disabled:cursor-not-allowed disabled:opacity-60
-                 sm:w-auto sm:min-w-60"
+      title={compact ? accessibleLabel : undefined}
+      className={`${baseClassName} ${variantClassName}`}
     >
       {isFavorite ? (
-        <FaHeart aria-hidden="true" />
+        <FaHeart
+          aria-hidden="true"
+          className={compact ? "text-red-500" : undefined}
+        />
       ) : (
         <FaRegHeart aria-hidden="true" />
       )}
 
-      {label}
+      {!compact && <span>{label}</span>}
     </button>
   );
 }
