@@ -1,3 +1,4 @@
+import { MemoryRouter } from "react-router-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
@@ -14,7 +15,9 @@ function createCast(count) {
 
 describe("MovieCastSection", () => {
   it("shows six actors and navigates between pages", () => {
-    render(<MovieCastSection cast={createCast(8)} />);
+    render(<MovieCastSection cast={createCast(8)} />, {
+      wrapper: MemoryRouter,
+    });
 
     expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(6);
 
@@ -40,7 +43,9 @@ describe("MovieCastSection", () => {
   });
 
   it("does not show navigation for a single page", () => {
-    render(<MovieCastSection cast={createCast(6)} />);
+    render(<MovieCastSection cast={createCast(6)} />, {
+      wrapper: MemoryRouter,
+    });
 
     expect(screen.queryByRole("button", { name: "Next cast page" })).toBeNull();
 
@@ -52,13 +57,17 @@ describe("MovieCastSection", () => {
   it("does not display duplicate actors", () => {
     const cast = createCast(2);
 
-    render(<MovieCastSection cast={[...cast, cast[0]]} />);
+    render(<MovieCastSection cast={[...cast, cast[0]]} />, {
+      wrapper: MemoryRouter,
+    });
 
     expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(2);
   });
 
   it("shows an empty state when cast information is unavailable", () => {
-    render(<MovieCastSection cast={[]} />);
+    render(<MovieCastSection cast={[]} />, {
+      wrapper: MemoryRouter,
+    });
 
     expect(screen.getByText("Cast information is unavailable.")).not.toBeNull();
 

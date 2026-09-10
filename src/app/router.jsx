@@ -10,6 +10,7 @@ import {
   MovieDetailsRoute,
   ProfileRoute,
   FavoritesRoute,
+  PersonDetailsRoute
 } from "./RoutePages";
 
 export const router = createBrowserRouter([
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
             <FavoritesRoute />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "people/:id",
+        element: <PersonDetailsRoute />,
       },
     ],
   },

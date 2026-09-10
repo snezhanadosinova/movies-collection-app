@@ -6,9 +6,7 @@ const LazyRegisterPage = lazy(
   () => import("@/features/auth/pages/RegisterPage"),
 );
 
-const LazyLoginPage = lazy(
-  () => import("@/features/auth/pages/LoginPage"),
-);
+const LazyLoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));
 
 const LazyMovieDetailsPage = lazy(
   () => import("@/features/movies/pages/MovieDetailsPage"),
@@ -22,12 +20,12 @@ const LazyFavoritesPage = lazy(
   () => import("@/features/favorites/pages/FavoritesPage"),
 );
 
+const LazyPersonDetailsPage = lazy(
+  () => import("@/features/people/pages/PersonDetailsPage"),
+);
+
 function PageBoundary({ children }) {
-  return (
-    <Suspense fallback={<PageLoader />}>
-      {children}
-    </Suspense>
-  );
+  return <Suspense fallback={<PageLoader />}>{children}</Suspense>;
 }
 
 export function RegisterRoute() {
@@ -66,6 +64,14 @@ export function FavoritesRoute() {
   return (
     <PageBoundary>
       <LazyFavoritesPage />
+    </PageBoundary>
+  );
+}
+
+export function PersonDetailsRoute() {
+  return (
+    <PageBoundary>
+      <LazyPersonDetailsPage />
     </PageBoundary>
   );
 }

@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
+import { Link } from "react-router-dom";
 
 const PAGE_SIZE = 6;
 
@@ -72,32 +73,42 @@ export function MovieCastSection({ cast = [] }) {
                 key={person.id}
                 className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900"
               >
-                <div className="aspect-[2/3] bg-zinc-800">
-                  {person.profile_path ? (
-                    <img
-                      src={getTmdbImageUrl(person.profile_path, "w185")}
-                      alt={person.name}
-                      loading="lazy"
-                      width="185"
-                      height="278"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center p-3 text-center text-sm text-zinc-400">
-                      Photo unavailable
-                    </div>
-                  )}
-                </div>
+                <Link
+                  to={`/people/${person.id}`}
+                  className="
+                    block h-full rounded-xl
+                    transition-colors hover:bg-zinc-800
+                    focus-visible:outline-2 focus-visible:outline-offset-2
+                    focus-visible:outline-red-400
+                  "
+                >
+                  <div className="aspect-[2/3] bg-zinc-800">
+                    {person.profile_path ? (
+                      <img
+                        src={getTmdbImageUrl(person.profile_path, "w185")}
+                        alt={person.name}
+                        loading="lazy"
+                        width="185"
+                        height="278"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center p-3 text-center text-sm text-zinc-400">
+                        Photo unavailable
+                      </div>
+                    )}
+                  </div>
 
-                <div className="p-3">
-                  <h3 className="line-clamp-2 min-h-10 text-sm font-semibold">
-                    {person.name}
-                  </h3>
+                  <div className="p-3">
+                    <h3 className="line-clamp-2 min-h-10 text-sm font-semibold">
+                      {person.name}
+                    </h3>
 
-                  <p className="mt-1 line-clamp-2 min-h-10 text-sm text-zinc-400">
-                    {person.character || "Role unavailable"}
-                  </p>
-                </div>
+                    <p className="mt-1 line-clamp-2 min-h-10 text-sm text-zinc-400">
+                      {person.character || "Role unavailable"}
+                    </p>
+                  </div>
+                </Link>
               </li>
             ))}
 
