@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
 
 function MediaCard({ title, to, posterPath, voteAverage, action }) {
-  const rating = Number.isFinite(voteAverage) ? voteAverage.toFixed(1) : "Not rated";
+  const rating = Number.isFinite(voteAverage)
+    ? voteAverage.toFixed(1)
+    : "Not rated";
 
   return (
     <article className="relative min-w-0 rounded-xl bg-zinc-900">
