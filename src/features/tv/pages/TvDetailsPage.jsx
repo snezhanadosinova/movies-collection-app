@@ -244,10 +244,11 @@ export default function TvDetailsPage() {
           ) : (
             <ul className="grid gap-4 md:grid-cols-2">
               {seasons.map((season) => (
-                <li
-                  key={season.season_number}
-                  className="flex gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4"
-                >
+                <li key={season.season_number}>
+                  <Link
+                    to={`/tv/${series.id}/seasons/${season.season_number}`}
+                    className={focus + " flex h-full gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-colors hover:border-zinc-600 hover:bg-zinc-800"}
+                  >
                   <div className="aspect-[2/3] w-20 shrink-0 self-start overflow-hidden rounded-lg bg-zinc-800">
                     {season.poster_path && (
                       <img
@@ -272,6 +273,7 @@ export default function TvDetailsPage() {
                       {season.overview || "Overview is unavailable."}
                     </p>
                   </div>
+                  </Link>
                 </li>
               ))}
             </ul>

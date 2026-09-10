@@ -26,3 +26,7 @@ export const getTvDetails = async (id, signal) => {
   });
   return data;
 };
+export const getTvSeason = async (id, seasonNumber, signal) => {
+  const { data } = await api.get(`/tv/${id}/season/${seasonNumber}`, { signal });
+  return data;
+};

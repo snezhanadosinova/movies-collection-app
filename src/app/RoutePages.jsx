@@ -1,3 +1,4 @@
+import TvSeasonSkeleton from "@/features/tv/components/TvSeasonSkeleton";
 import TvDetailsSkeleton from "@/features/tv/components/TvDetailsSkeleton";
 import { lazy, Suspense } from "react";
 
@@ -92,6 +93,15 @@ export function TvDetailsRoute() {
   return (
     <Suspense fallback={<TvDetailsSkeleton />}>
       <LazyTvDetailsPage />
+    </Suspense>
+  );
+}
+const LazyTvSeasonPage = lazy(() => import("@/features/tv/pages/TvSeasonPage"));
+
+export function TvSeasonRoute() {
+  return (
+    <Suspense fallback={<TvSeasonSkeleton />}>
+      <LazyTvSeasonPage />
     </Suspense>
   );
 }
