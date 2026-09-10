@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import toast from "react-hot-toast";
 
@@ -37,16 +37,25 @@ function Navbar() {
   };
 
   return (
-    <header className="h-20 border-b border-zinc-800 bg-zinc-950">
+    <header className="min-h-20 border-b border-zinc-800 bg-zinc-950">
       <nav
         aria-label="Main navigation"
-        className="mx-auto flex h-full max-w-7xl items-center justify-between px-5"
+        className="mx-auto flex min-h-20 max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3"
       >
-        <Link to="/" className="text-2xl font-bold text-red-500">
+        <div className="flex items-center gap-4">
+        <Link to="/" className="text-xl font-bold text-red-500">
           Movies
         </Link>
 
-        <div className="flex min-h-10 items-center gap-4">
+          <NavLink to="/tv" className={({ isActive }) =>
+            "inline-flex min-h-11 items-center rounded text-sm font-medium focus-visible:outline-2 focus-visible:outline-red-400 " +
+            (isActive ? "text-red-400" : "text-white hover:text-red-400")
+          }>
+            TV Series
+          </NavLink>
+        </div>
+
+        <div className="flex min-h-10 items-center gap-3">
           {showAvatar ? (
             <Menu as="div" className="relative">
               <MenuButton

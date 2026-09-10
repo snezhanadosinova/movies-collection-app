@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function MovieTrailerSection({ trailer }) {
+export function MovieTrailerSection({ trailer, heading = "Official trailer" }) {
   const [playing, setPlaying] = useState(false);
 
   if (!trailer) return null;
@@ -8,7 +8,7 @@ export function MovieTrailerSection({ trailer }) {
   return (
     <section aria-labelledby="trailer-heading">
       <h2 id="trailer-heading" className="mb-4 text-2xl font-bold">
-        Official trailer
+        {heading}
       </h2>
 
       <div className="aspect-video overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">

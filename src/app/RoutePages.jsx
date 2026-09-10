@@ -1,3 +1,4 @@
+import TvDetailsSkeleton from "@/features/tv/components/TvDetailsSkeleton";
 import { lazy, Suspense } from "react";
 
 import PageLoader from "@/components/common/PageLoader";
@@ -73,5 +74,24 @@ export function PersonDetailsRoute() {
     <PageBoundary>
       <LazyPersonDetailsPage />
     </PageBoundary>
+  );
+}
+
+const LazyTvCatalogPage = lazy(() => import("@/features/tv/pages/TvCatalogPage"));
+
+export function TvCatalogRoute() {
+  return (
+    <PageBoundary>
+      <LazyTvCatalogPage />
+    </PageBoundary>
+  );
+}
+const LazyTvDetailsPage = lazy(() => import("@/features/tv/pages/TvDetailsPage"));
+
+export function TvDetailsRoute() {
+  return (
+    <Suspense fallback={<TvDetailsSkeleton />}>
+      <LazyTvDetailsPage />
+    </Suspense>
   );
 }
