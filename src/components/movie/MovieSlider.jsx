@@ -14,8 +14,8 @@ export default function MovieSlider() {
 
   if (isLoading) {
     return (
-      <div className="py-6">
-        <div className="h-[75vh] w-full rounded-2xl bg-zinc-900" role="status">
+      <div className="pb-6">
+        <div className="h-[75vh] w-full bg-zinc-900" role="status">
           <span className="sr-only">Loading featured movies...</span>
         </div>
       </div>
@@ -24,9 +24,9 @@ export default function MovieSlider() {
 
   if (isError) {
     return (
-      <div className="py-6">
+      <div className="pb-6">
         <div
-          className="flex h-[75vh] items-center justify-center rounded-2xl bg-zinc-900 text-red-500"
+          className="flex h-[75vh] items-center justify-center bg-zinc-900 text-red-500"
           role="alert"
         >
           Failed to load featured movies.
@@ -38,7 +38,7 @@ export default function MovieSlider() {
   if (movies.length === 0) return null;
 
   return (
-    <div className="py-6">
+    <div className="pb-6">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         navigation
@@ -50,7 +50,6 @@ export default function MovieSlider() {
         }}
         effect="fade"
         loop={movies.length > 3}
-        className="rounded-2xl"
       >
         {movies.map((movie, index) => (
           <SwiperSlide key={movie.id}>

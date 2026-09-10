@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import FavoriteButton from "@/components/movie/FavoriteButton";
 import { getTmdbBackdropUrl, getTmdbImageUrl } from "@/utils/tmdbImages";
 
@@ -91,18 +92,21 @@ export function MovieHeroSection({ movie, loading = false }) {
                 </p>
               )}
 
-              <div className="mt-5 flex flex-wrap items-center gap-2">
+              <p className="text-zinc-300 mt-4">
                 <span className="rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-300">
-                  ★ {rating}
+                  ★ {rating ? rating : "Not rated"}
                 </span>
+              </p>
 
+              <div className="mt-5 flex flex-wrap items-center gap-2">
                 {genres.map((genre) => (
-                  <span
+                  <Link
+                    to={`/?genre=${genre.id}`}
                     key={genre.id}
-                    className="rounded-full border border-white/15 px-3 py-1 text-sm text-zinc-200"
+                    className="rounded-full border border-white/15 px-3 py-1 text-sm text-zinc-200 hover:bg-zinc-800"
                   >
                     {genre.name}
-                  </span>
+                  </Link>
                 ))}
               </div>
 

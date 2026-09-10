@@ -161,7 +161,7 @@ export default function TvDetailsPage() {
                       to={`/tv?genre=${genre.id}`}
                       className={
                         focus +
-                        " inline-flex min-h-11 items-center rounded-full border border-zinc-700 px-4 text-sm hover:bg-zinc-800"
+                        " rounded-full border border-white/15 px-3 py-1 text-sm text-zinc-200 hover:bg-zinc-800"
                       }
                     >
                       {genre.name}
@@ -174,7 +174,9 @@ export default function TvDetailsPage() {
               </p>
               {series.created_by?.length > 0 && (
                 <div className="mt-6">
-                  <h2 className="mt-4 text-sm text-zinc-300 font-bold">Created by</h2>
+                  <h2 className="mt-4 text-sm text-zinc-300 font-bold">
+                    Created by
+                  </h2>
                   <ul className="flex flex-wrap gap-4">
                     {series.created_by.map((person) => (
                       <li key={person.id}>
@@ -247,32 +249,35 @@ export default function TvDetailsPage() {
                 <li key={season.season_number}>
                   <Link
                     to={`/tv/${series.id}/seasons/${season.season_number}`}
-                    className={focus + " flex h-full gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-colors hover:border-zinc-600 hover:bg-zinc-800"}
+                    className={
+                      focus +
+                      " flex h-full gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-colors hover:border-zinc-600 hover:bg-zinc-800"
+                    }
                   >
-                  <div className="aspect-[2/3] w-20 shrink-0 self-start overflow-hidden rounded-lg bg-zinc-800">
-                    {season.poster_path && (
-                      <img
-                        src={getTmdbImageUrl(season.poster_path, "w154")}
-                        alt=""
-                        loading="lazy"
-                        width="154"
-                        height="231"
-                        className="h-full w-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-lg font-semibold">
-                      {season.name || `Season ${season.season_number}`}
-                    </h3>
-                    <p className="mt-1 text-sm text-zinc-400">
-                      {season.episode_count ?? 0} episodes ·{" "}
-                      {formatTvDate(season.air_date)}
-                    </p>
-                    <p className="mt-3 text-sm leading-6 text-zinc-300">
-                      {season.overview || "Overview is unavailable."}
-                    </p>
-                  </div>
+                    <div className="aspect-[2/3] w-20 shrink-0 self-start overflow-hidden rounded-lg bg-zinc-800">
+                      {season.poster_path && (
+                        <img
+                          src={getTmdbImageUrl(season.poster_path, "w154")}
+                          alt=""
+                          loading="lazy"
+                          width="154"
+                          height="231"
+                          className="h-full w-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-semibold">
+                        {season.name || `Season ${season.season_number}`}
+                      </h3>
+                      <p className="mt-1 text-sm text-zinc-400">
+                        {season.episode_count ?? 0} episodes ·{" "}
+                        {formatTvDate(season.air_date)}
+                      </p>
+                      <p className="mt-3 text-sm leading-6 text-zinc-300">
+                        {season.overview || "Overview is unavailable."}
+                      </p>
+                    </div>
                   </Link>
                 </li>
               ))}

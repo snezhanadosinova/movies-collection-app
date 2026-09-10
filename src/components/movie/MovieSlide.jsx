@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import { getTmdbBackdropUrl, getTmdbBackdropSrcSet } from "@/utils/tmdbImages";
 
@@ -6,7 +6,7 @@ export default function MovieSlide({ movie, genreMap, priority = false }) {
   const navigate = useNavigate();
 
   return (
-    <div className="relative h-[75vh] w-full overflow-hidden rounded-2xl bg-zinc-900">
+    <div className="relative h-[75vh] w-full overflow-hidden bg-zinc-900">
       {movie.backdrop_path && (
         <img
           src={getTmdbBackdropUrl(movie.backdrop_path)}
@@ -36,12 +36,13 @@ export default function MovieSlide({ movie, genreMap, priority = false }) {
 
           <div className="my-4 flex flex-wrap gap-3">
             {(movie.genre_ids ?? []).map((genreId) => (
-              <span
+              <Link
+                to={`/?genre=${genreId}`}
                 key={genreId}
                 className="inline-flex items-center gap-x-1.5 rounded-full bg-red-500 px-2 py-1 text-xs font-medium text-white"
               >
                 {genreMap[genreId]}
-              </span>
+              </Link>
             ))}
           </div>
 
