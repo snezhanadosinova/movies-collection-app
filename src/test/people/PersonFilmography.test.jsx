@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
 import { PersonFilmography } from "@/features/people/components/PersonFilmography";
@@ -61,7 +61,7 @@ describe("PersonFilmography", () => {
     ).toBeNull();
   });
 
-  it("filters series and links them to TMDB", () => {
+  it("filters series and links them to local details", () => {
     renderFilmography();
 
     fireEvent.change(
@@ -72,13 +72,13 @@ describe("PersonFilmography", () => {
     expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(1);
 
     const link = screen.getByRole("link", {
-      name: "Example Series on TMDB (opens in a new tab)",
+      name: /Example Series/,
     });
 
     expect(link.getAttribute("href")).toBe(
-      "https://www.themoviedb.org/tv/10",
+      "/tv/10",
     );
-    expect(link.getAttribute("rel")).toContain("noopener");
+    expect(link.getAttribute("target")).toBeNull();
   });
 
   it("links movies to their local details page", () => {
@@ -102,5 +102,36 @@ describe("PersonFilmography", () => {
     expect(
       screen.queryByText("No titles match these filters."),
     ).not.toBeNull();
+  });
+});
+describe("PersonFilmography local navigation", () => {
+  it.each([
+    ["movie", "/movies/42", "Movie destination"],
+    ["tv", "/tv/42", "Series destination"],
+  ])("opens the correct route for %s", (mediaType, destination, heading) => {
+    render(
+      <MemoryRouter initialEntries={["/people/7"]}>
+        <Routes>
+          <Route path="/people/:id" element={
+            <PersonFilmography credits={{ cast: [{
+              id: 42, media_type: mediaType, title: "Example title", name: "Example title",
+            }] }} />
+          } />
+          <Route path={destination} element={<h1>{heading}</h1>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByRole("link", { name: /Example title/ }));
+    expect(screen.queryByRole("heading", { name: heading })).not.toBeNull();
+  });
+
+  it("keeps movie and TV destinations separate for the same ID", () => {
+    renderFilmography({ cast: [
+      { id: 42, media_type: "movie", title: "Example movie" },
+      { id: 42, media_type: "tv", name: "Example series" },
+    ] });
+    expect(screen.getByRole("link", { name: /Example movie/ }).getAttribute("href")).toBe("/movies/42");
+    expect(screen.getByRole("link", { name: /Example series/ }).getAttribute("href")).toBe("/tv/42");
   });
 });

@@ -1,5 +1,5 @@
 import { useId, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
 import { getPersonCredits } from "../utils/personDetails";
@@ -12,6 +12,7 @@ const controlClassName =
   "focus-visible:outline-red-400";
 
 export function PersonFilmography({ credits }) {
+  const location = useLocation();
   const [search, setSearch] = useState("");
   const [mediaType, setMediaType] = useState("all");
   const [page, setPage] = useState(0);
@@ -136,24 +137,15 @@ export function PersonFilmography({ credits }) {
                 key={title.key}
                 className="rounded-xl border border-zinc-800 bg-zinc-900"
               >
-                {title.mediaType === "movie" ? (
-                  <Link
-                    to={`/movies/${title.id}`}
-                    className={linkClassName}
-                  >
-                    {content}
-                  </Link>
-                ) : (
-                  <a
-                    href={`https://www.themoviedb.org/tv/${title.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={linkClassName}
-                    aria-label={`${title.title} on TMDB (opens in a new tab)`}
-                  >
-                    {content}
-                  </a>
-                )}
+                <Link
+                  to={`/${title.mediaType === "tv" ? "tv" : "movies"}/${title.id}`}
+                  state={{
+                    fromPerson: location.pathname + location.search + location.hash,
+                  }}
+                  className={linkClassName}
+                >
+                  {content}
+                </Link>
 
                 <p className="px-3 pb-4 text-sm text-zinc-400">
                   {title.roles.join(" · ")}

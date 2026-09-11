@@ -1,5 +1,5 @@
 import FavoriteButton from "@/components/movie/FavoriteButton";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import RecommendationsSection from "@/components/media/RecommendationsSection";
 import { MovieCastSection } from "@/features/movies/components/MovieCastSection";
 import { MovieTrailerSection } from "@/features/movies/components/MovieTrailerSection";
@@ -24,6 +24,13 @@ const retryClass =
 
 export default function TvDetailsPage() {
   const { id } = useParams();
+  const location = useLocation();
+  const fromPerson = location.state?.fromPerson;
+  const hasPersonOrigin =
+    typeof fromPerson === "string" &&
+    /^\/people\/[1-9]\d*(?:[?#].*)?$/.test(fromPerson);
+  const backTo = hasPersonOrigin ? fromPerson : "/tv";
+  const backLabel = hasPersonOrigin ? "Back to actor" : "TV Series";
   const {
     data: series,
     isPending,
@@ -59,10 +66,10 @@ export default function TvDetailsPage() {
           </button>
         )}
         <Link
-          to="/tv"
+          to={backTo} replace={hasPersonOrigin}
           className={focus + " mt-6 block w-fit py-3 text-red-400"}
         >
-          Browse TV series
+          {hasPersonOrigin ? backLabel : "Browse TV series"}
         </Link>
       </div>
     );
@@ -112,12 +119,12 @@ export default function TvDetailsPage() {
         />
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <Link
-            to="/tv"
+            to={backTo} replace={hasPersonOrigin}
             className={
               focus + " mb-6 inline-flex min-h-11 items-center text-zinc-300"
             }
           >
-            ← TV Series
+            ← {backLabel}
           </Link>
           <div className="grid items-start gap-8 md:grid-cols-[260px_1fr]">
             <div className="mx-auto aspect-[2/3] w-36 overflow-hidden rounded-2xl bg-zinc-800 shadow-xl sm:w-44 lg:mx-0 lg:w-full">
