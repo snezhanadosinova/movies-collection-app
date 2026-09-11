@@ -43,13 +43,16 @@ function Navbar() {
         className="mx-auto flex min-h-20 max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3"
       >
         <div className="flex items-center gap-4">
-        <Link to="/" className="text-xl font-bold text-red-500">
-          Movies
-        </Link>
+        <NavLink to="/" className={({ isActive }) =>
+            "inline-flex min-h-11 items-center rounded text-xl focus-visible:outline-2 focus-visible:outline-red-400 hover:underline " +
+            (isActive ? "text-red-400 font-bold" : "text-white hover:text-red-400")
+          }>
+            Movies
+          </NavLink>
 
           <NavLink to="/tv" className={({ isActive }) =>
-            "inline-flex min-h-11 items-center rounded text-sm font-medium focus-visible:outline-2 focus-visible:outline-red-400 " +
-            (isActive ? "text-red-400" : "text-white hover:text-red-400")
+            "inline-flex min-h-11 items-center rounded text-xl focus-visible:outline-2 focus-visible:outline-red-400 hover:underline " +
+            (isActive ? "text-red-400 font-bold" : "text-white hover:text-red-400")
           }>
             TV Series
           </NavLink>
