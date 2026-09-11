@@ -34,7 +34,7 @@ export default function EpisodeCard({ episode }) {
                 ★ {episode.vote_average.toFixed(1)} / 10
               </span>
             ) : (
-              <span className="rounded-full bg-gray-400/15 px-2 py-0.5 text-xs text-gray-300 ml-4">Not rated</span>
+              <span className="rounded-full bg-gray-400/15 px-2 py-0.5 text-xs text-gray-300">Not rated</span>
             )}
         </p>
         <h3 className="mt-1 text-xl font-semibold">
