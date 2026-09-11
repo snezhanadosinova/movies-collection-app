@@ -64,3 +64,9 @@ describe("TvDetailsPage", () => {
     expect(screen.getByRole("alert").textContent).toContain("Showing available details");
   });
 });
+
+vi.mock("@/components/movie/FavoriteButton", () => ({
+  default: ({ movieId, mediaType }) => (
+    <button aria-label={`Favorite ${mediaType} ${movieId}`}>Favorite</button>
+  ),
+}));

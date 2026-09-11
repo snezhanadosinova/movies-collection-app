@@ -1,3 +1,4 @@
+import FavoriteButton from "@/components/movie/FavoriteButton";
 import { Link, useParams } from "react-router-dom";
 import RecommendationsSection from "@/components/media/RecommendationsSection";
 import { MovieCastSection } from "@/features/movies/components/MovieCastSection";
@@ -172,6 +173,9 @@ export default function TvDetailsPage() {
               <p className="mt-6 whitespace-pre-line leading-7 text-zinc-300">
                 {series.overview || "Overview is unavailable."}
               </p>
+              <div className="mt-6">
+                <FavoriteButton movieId={series.id} movieTitle={series.name} mediaType="tv" />
+              </div>
               {series.created_by?.length > 0 && (
                 <div className="mt-6">
                   <h2 className="mt-4 text-sm text-zinc-300 font-bold">

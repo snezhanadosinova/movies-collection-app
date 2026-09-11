@@ -3,7 +3,9 @@ import api from "@/lib/axios";
 import { getTvGenres, getTvPage } from "@/features/tv/api/tvApi";
 
 vi.mock("@/lib/axios", () => ({ default: { get: vi.fn() } }));
-beforeEach(() => vi.mocked(api.get).mockReset().mockResolvedValue({ data: { results: [] } }));
+beforeEach(() => {
+  vi.mocked(api.get).mockReset().mockResolvedValue({ data: { results: [] } });
+});
 
 describe("TV API", () => {
   it.each([

@@ -1,3 +1,4 @@
+import FavoriteButton from "@/components/movie/FavoriteButton";
 import { useCallback, useId } from "react";
 import MediaCard from "@/components/media/MediaCard";
 import MovieGridSkeleton from "@/components/movie/MovieGridSkeleton";
@@ -82,7 +83,8 @@ export default function TvCatalogPage() {
           {series.map((item) => (
             <MediaCard key={item.id} title={item.name || "Untitled series"}
               to={`/tv/${item.id}`}
-              posterPath={item.poster_path} voteAverage={item.vote_average} />
+              posterPath={item.poster_path} voteAverage={item.vote_average}
+              action={<FavoriteButton movieId={item.id} movieTitle={item.name} mediaType="tv" compact />} />
           ))}
         </div>
       ) : !query.isError && waiting ? (

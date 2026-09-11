@@ -197,3 +197,41 @@ describe("FavoriteButton", () => {
     expect(mutate).not.toHaveBeenCalled();
   });
 });
+
+describe("FavoriteButton TV support", () => {
+  it("does not confuse a movie favorite with a series of the same ID", () => {
+    vi.mocked(useFavorites).mockReturnValue({
+      data: { 550: true }, isPending: false, isError: false,
+    });
+    render(
+      <MemoryRouter>
+        <FavoriteButton movieId={550} movieTitle="Series" mediaType="tv" />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Add to favorites: Series" }));
+    expect(mutate).toHaveBeenCalledWith(
+      { movieId: 550, mediaType: "tv", isFavorite: false }, expect.any(Object),
+    );
+  });
+
+  it("returns a guest to the TV details page after login", async () => {
+    vi.mocked(useAuth).mockReturnValue({ user: null, loading: false });
+    render(
+      <MemoryRouter initialEntries={["/tv/550"]}>
+        <Routes>
+          <Route path="/tv/:id" element={<FavoriteButton movieId={550} mediaType="tv" />} />
+          <Route path="/login" element={<LoginDestination />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Add to favorites" }));
+    expect((await screen.findByTestId("return-path")).textContent).toBe("/tv/550");
+  });
+
+  it("only locks mutations for the same media type", () => {
+    render(<MemoryRouter><FavoriteButton movieId={550} mediaType="tv" /></MemoryRouter>);
+    const { predicate } = vi.mocked(useIsMutating).mock.calls.at(-1)[0];
+    expect(predicate({ state: { variables: { movieId: 550 } } })).toBe(false);
+    expect(predicate({ state: { variables: { movieId: 550, mediaType: "tv" } } })).toBe(true);
+  });
+});

@@ -32,3 +32,9 @@ describe("TV season navigation", () => {
     expect(screen.queryByRole("heading", { name: "Specials destination" })).not.toBeNull();
   });
 });
+
+vi.mock("@/components/movie/FavoriteButton", () => ({
+  default: ({ movieId, mediaType }) => (
+    <button aria-label={`Favorite ${mediaType} ${movieId}`}>Favorite</button>
+  ),
+}));

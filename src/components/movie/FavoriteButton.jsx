@@ -1,3 +1,4 @@
+import { getFavoriteKey } from "@/features/favorites/utils/favoriteIdentity";
 import { useIsMutating } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
@@ -11,18 +12,23 @@ export default function FavoriteButton({
   movieId,
   movieTitle,
   compact = false,
+  mediaType = "movie",
 }) {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const favoritesQuery = useFavorites();
   const mutation = useToggleFavorite();
 
+  const favoriteKey = getFavoriteKey(movieId, mediaType);
+
   const pendingCount = useIsMutating({
     mutationKey: ["toggle-favorite", user?.uid],
-    predicate: (item) => item.state.variables?.movieId === movieId,
+    predicate: (item) =>
+      String(item.state.variables?.movieId) === String(movieId) &&
+      (item.state.variables?.mediaType || "movie") === mediaType,
   });
 
-  const isFavorite = Boolean(favoritesQuery.data?.[movieId]);
+  const isFavorite = favoritesQuery.data?.[favoriteKey] === true;
   const isPending = mutation.isPending || pendingCount > 0;
   const isChecking = loading || (Boolean(user) && favoritesQuery.isPending);
   const hasError = Boolean(user) && favoritesQuery.isError;
@@ -32,7 +38,7 @@ export default function FavoriteButton({
 
     if (!user) {
       navigate("/login", {
-        state: { from: `/movies/${movieId}` },
+        state: { from: `/${mediaType === "tv" ? "tv" : "movies"}/${movieId}` },
       });
       return;
     }
@@ -43,7 +49,7 @@ export default function FavoriteButton({
     }
 
     mutation.mutate(
-      { movieId, isFavorite },
+      { movieId, isFavorite, ...(mediaType === "tv" ? { mediaType } : {}) },
       {
         onSuccess: () => {
           toast.success(

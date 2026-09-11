@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { afterAll, beforeAll, beforeEach, describe, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   assertFails,
   assertSucceeds,
@@ -149,5 +149,28 @@ describe("Firestore user document rules", () => {
     const db = testEnv.authenticatedContext("alice").firestore();
 
     await assertFails(setDoc(doc(db, "users", "alice"), data));
+  });
+});
+
+describe("Mixed movie and TV favorites", () => {
+  it("adds and removes a TV favorite without changing the movie of the same ID", async () => {
+    const db = testEnv.authenticatedContext("alice").firestore();
+    const ref = doc(db, "users", "alice");
+    await assertSucceeds(setDoc(ref, { favorites: { "tv:550": true } }, { merge: true }));
+    expect((await getDoc(ref)).data().favorites).toEqual({ 550: true, "tv:550": true });
+    await assertSucceeds(setDoc(ref, { favorites: { "tv:550": deleteField() } }, { merge: true }));
+    expect((await getDoc(ref)).data().favorites).toEqual({ 550: true });
+  });
+
+  it("rejects writes to another user's TV favorites", async () => {
+    const db = testEnv.authenticatedContext("bob").firestore();
+    await assertFails(setDoc(doc(db, "users", "alice"),
+      { favorites: { "tv:550": true } }, { merge: true }));
+  });
+
+  it("rejects unauthenticated TV favorite writes", async () => {
+    const db = testEnv.unauthenticatedContext().firestore();
+    await assertFails(setDoc(doc(db, "users", "alice"),
+      { favorites: { "tv:550": true } }, { merge: true }));
   });
 });

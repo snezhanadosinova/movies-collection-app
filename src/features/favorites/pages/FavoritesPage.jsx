@@ -1,42 +1,44 @@
-import MovieCard from "@/components/movie/MovieCard";
+import { useId, useState } from "react";
+import FavoriteMediaCard from "@/components/media/FavoriteMediaCard";
+import MovieGridSkeleton from "@/components/movie/MovieGridSkeleton";
 import { useFavoriteMovies } from "../hooks/useFavoriteMovies";
-import PageLoader from "../../../components/common/PageLoader";
 
-function FavoritesPage() {
-  const { data: movies = [], isLoading, isError } = useFavoriteMovies();
-
-  if (isLoading) {
-    return <PageLoader />;
-  }
-
-  if (isError) {
-    return (
-      <div className="p-6 text-red-400" role="alert">
-        Could not load favorites. Please try again later.
-      </div>
-    );
-  }
-
-  if (!movies.length) {
-    return (
-      <div className="flex h-[60vh] flex-col items-center justify-center text-zinc-400">
-        <p className="text-xl">No favorites yet 💔</p>
-        <p className="text-sm">Add movies you like to see them here</p>
-      </div>
-    );
-  }
+export default function FavoritesPage() {
+  const [filter, setFilter] = useState("all");
+  const filterId = useId();
+  const { data: items = [], isLoading, isError, isFetching, refetch } = useFavoriteMovies();
+  const visibleItems = items.filter((item) => filter === "all" || (item.media_type || "movie") === filter);
 
   return (
-    <div className="mx-auto max-w-7xl p-6">
-      <h1 className="mb-6 text-3xl font-bold text-white">Your Favorites</h1>
+    <div className="mx-auto max-w-7xl px-4 py-8 text-white sm:px-6">
+      <h1 className="mb-6 text-3xl font-bold">Your Favorites</h1>
+      <label htmlFor={filterId} className="mb-2 block text-sm">Title type</label>
+      <select id={filterId} value={filter} onChange={(event) => setFilter(event.target.value)}
+        className="mb-8 min-h-11 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2 focus-visible:outline-2 focus-visible:outline-red-400">
+        <option value="all">All</option>
+        <option value="movie">Movies</option>
+        <option value="tv">TV Series</option>
+      </select>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
-        {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-      </div>
+      {isError && <div className="mb-6">
+        <p role="alert" className="text-red-400">Could not load all favorites. Available titles are shown below.</p>
+        <button type="button" onClick={refetch} disabled={isFetching}
+          className="mt-3 min-h-11 rounded-xl bg-red-500 px-5 py-2 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-red-400">
+          {isFetching ? "Retrying..." : "Retry"}
+        </button>
+      </div>}
+
+      {isLoading ? <MovieGridSkeleton /> : visibleItems.length > 0 ? (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {visibleItems.map((item) => <FavoriteMediaCard key={`${item.media_type || "movie"}:${item.id}`} item={item} />)}
+        </div>
+      ) : !isError && !isFetching ? (
+        <div className="py-12 text-zinc-400">
+          <p className="text-xl">{items.length ? "No favorites of this type yet." : "No favorites yet 💔"}</p>
+          <p className="mt-2 text-sm">Add movies and TV series you like to see them here.</p>
+        </div>
+      ) : null}
+      {!isLoading && isFetching && <p role="status" className="mt-6 text-zinc-400">Updating favorites...</p>}
     </div>
   );
 }
-
-export default FavoritesPage;
