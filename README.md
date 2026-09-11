@@ -1,207 +1,244 @@
 # Movies Collection App
 
-A modern web application for discovering, searching, and managing your favorite movies. Built with React, Vite, and powered by The Movie Database (TMDB) API and Firebase.
+A React application for discovering movies and TV series, exploring cast profiles, and keeping a personal favorites collection. Movie, series, and person information comes from TMDB; authentication and favorites use Firebase.
 
-> **Built with AI** - This project was developed with assistance from AI-powered tools to accelerate development and ensure best practices.
+This is a learning and portfolio project focused on frontend architecture, asynchronous state, accessible interfaces, and testing. Development is assisted by AI tools, with changes reviewed and checked incrementally.
 
-## 🎬 Features
+## Features
 
-- **Movie Discovery**: Browse popular and trending movies, or discover by genre
-- **Genre Filtering**: Filter movies by genre with an intuitive dropdown selector
-- **Search Functionality**: Search for movies by title with real-time debounced search
-- **Infinite Scroll Pagination**: Automatic pagination as you scroll through movie lists
-- **Movie Details**: View comprehensive movie information including cast, crew, videos, and similar movies
-- **User Authentication**: Register and login with Firebase Authentication
-- **Favorites Management**: Add/remove movies to your personal favorites collection
-- **User Profile**: Manage your profile and view personalized data
-- **Responsive Design**: Beautiful, responsive UI built with Tailwind CSS
-- **Protected Routes**: Secure routes that require authentication
-- **Smooth Navigation**: Fast client-side routing with React Router
+### Movies and TV series
 
-## 🛠️ Tech Stack
+- Featured movie slider on the home page.
+- Movie and TV catalogs with genre filters and debounced title search.
+- Search and genre selection stored in URL parameters.
+- Infinite scrolling for browsing catalogs.
+- Automatic search pagination up to five result pages, with genre filtering and duplicate removal. Search results are therefore bounded, not a complete search of every API page.
+- Detail pages with posters, backdrops, descriptions, ratings, genres, cast, trailers, and up to six recommendations.
+- Trailers load the embedded player after the user chooses to play them.
+- TV season pages with episode information, including Specials (season zero).
+- Loading placeholders, missing-data fallbacks, and retry controls.
 
-### Frontend
+### People
 
-- **React 19.2.6** - UI library
-- **Vite 8.0.12** - Fast build tool and dev server
-- **React Router 7.15.1** - Client-side routing
-- **Tailwind CSS 4.3.0** - Utility-first CSS framework
-- **React Hook Form 7.76.0** - Efficient form handling
-- **Zod 4.4.3** - Schema validation
-- **React Icons 5.6.0** - Icon library
-- **React Hot Toast 2.6.0** - Toast notifications
-- **Swiper JS** - Sliders
+- Person profiles with biography, available personal information, external profiles, and filmography.
+- Filmography filters and pagination with eight titles per page.
+- Photo gallery initially showing six photos; Load More adds six at a time.
+- Gallery overlay with image navigation.
+- Local movie and TV links from filmography.
+- Contextual return links between titles and people, including the return path through TV seasons.
 
-### Backend Services
+### Accounts and favorites
 
-- **Firebase Authentication** - User authentication
-- **Firestore** - Real-time database
-- **TMDB API** - Movie data source
+- Email/password registration and login through Firebase Authentication.
+- Profile display-name editing in a modal.
+- Movie and TV favorites with optimistic updates and rollback after failed writes.
+- Separate identities for movies and series that share a numeric TMDB ID.
+- Favorites filters for all titles, movies, or TV series.
+- Unavailable favorite titles remain identifiable so they can be removed.
+- Cached avatar initials help display session-restoration UI; Firebase remains the source of authentication state.
 
-### State Management & Data Fetching
+## Technology
 
-- **TanStack React Query 5.100.10** - Server state management
-- **Axios 1.16.1** - HTTP client
-- **HeadlessUI** - Unstyled accessible UI components
+| Area | Tools |
+| --- | --- |
+| Interface | React 19, Tailwind CSS 4, Headless UI, React Icons, Swiper |
+| Routing | React Router 7 |
+| Server state | TanStack Query 5, Axios |
+| Forms | React Hook Form, Zod |
+| Services | TMDB API, Firebase Authentication, Cloud Firestore |
+| Development | Vite 8, ESLint, Docker Compose |
+| Tests | Vitest, React Testing Library, jsdom, Firebase Rules Unit Testing |
 
-### Development Tools
+Dependency ranges are recorded in `package.json`; `package-lock.json` records the resolved dependency tree. Use `npm ci` for reproducible installation.
 
-- **ESLint 10.3.0** - Code linting
-- **Tailwind CSS Vite Plugin** - Optimized CSS processing
+## Getting started with Docker
 
-## 📋 Prerequisites
+Run the following commands from the repository root in a terminal. On Windows with WSL, use the WSL terminal in VS Code and keep the project in the Linux filesystem.
 
-- Node.js (v16 or higher)
-- npm or yarn package manager
-- Firebase project with authentication and Firestore enabled
-- TMDB API key
-
-## 🚀 Getting Started
-
-### 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/snezhanadosinova/movies-collection-app.git
 cd movies-collection-app
 ```
 
-### 2. Install Dependencies
+### 2. Configure environment variables
 
-```bash
-npm install
-# or
-yarn install
-```
+Create `.env.local` in the repository root with your project's values:
 
-### 3. Environment Setup
-
-Create a `.env.local` file in the root directory with the following variables:
-
-```env
-VITE_FIREBASE_API_KEY=your_firebase_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
-VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
-VITE_FIREBASE_APP_ID=your_firebase_app_id
+```dotenv
 VITE_TMDB_API_KEY=your_tmdb_api_key
 VITE_TMDB_BASE_URL=https://api.themoviedb.org/3
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
 ```
 
-### 4. Run Development Server
+Configure a Firebase project with Email/Password sign-in enabled and a Firestore database. Configure the appropriate authentication domains and apply the repository's Firestore rules to your own project before relying on favorites access control.
+
+All `VITE_*` values are included in the browser application. They are not server-side secrets. Never place service-account credentials or private server tokens in them. Do not commit your local environment files.
+
+The app uses the configured Firebase project during development. The separate rules-test command uses a demo project in the emulator; starting the development server does not automatically connect the app to that emulator.
+
+### 3. Start the development container
+
+Requirements: Docker with the Compose plugin. On Windows, enable Docker Desktop's integration with your WSL distribution.
 
 ```bash
+docker compose -f compose.dev.yml up --build -d
+docker compose -f compose.dev.yml logs -f app
+```
+
+Open [localhost:5173](http://localhost:5173). Press `Ctrl+C` to stop following logs; the detached container keeps running.
+
+`Dockerfile.dev` provides Node 22 and Java 21 for the Firestore emulator. The container runs `npm ci` before starting Vite. Source files are bind-mounted, and dependencies and emulator downloads use named volumes.
+
+Stop the development environment:
+
+```bash
+docker compose -f compose.dev.yml down
+```
+
+After changing environment variables, restart the app:
+
+```bash
+docker compose -f compose.dev.yml restart app
+```
+
+## Local development without Docker
+
+Use Node.js 22.12 or newer in the Node 22 release line and npm. Java 21 is also required for the Firestore emulator tests.
+
+After configuring `.env.local`:
+
+```bash
+npm ci
 npm run dev
-# or
-yarn dev
 ```
 
-The application will be available at `http://localhost:5173`
+## Checks and tests
 
-### 5. Run with Docker
-
-Make sure `.env.local` contains the variables listed above, then build and start the production container:
+With the development container running:
 
 ```bash
-docker compose --env-file .env.local up --build
+docker compose -f compose.dev.yml exec app npm run lint
+docker compose -f compose.dev.yml exec app npm run test:run
+docker compose -f compose.dev.yml exec app npm run test:rules
+docker compose -f compose.dev.yml exec app npm run build
 ```
 
-The application will be available at `http://localhost:5173`. Stop it with `Ctrl+C`, or run `docker compose down` from another terminal.
+Run an individual test file:
 
-## 📦 Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint to check code quality
-
-## 📁 Project Structure
-
+```bash
+docker compose -f compose.dev.yml exec app npm run test:run -- src/test/people/PersonMediaReturn.test.jsx
 ```
+
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Start Vite development server |
+| `npm run lint` | Check source with ESLint |
+| `npm test` | Run Vitest in watch mode |
+| `npm run test:run` | Run the regular test suite once |
+| `npm run test:rules` | Start Firestore emulator, run rules tests, then stop it |
+| `npm run build` | Generate the production bundle in `dist/` |
+| `npm run preview` | Preview a built bundle locally |
+
+All tests live under `src/test/`. Regular tests cover components, hooks, utilities, routing interactions, and favorites behavior. Firestore security tests use a separate Node configuration and do not run as part of `test:run`.
+
+The rules test script uses `demo-movies-collection`. Its first run may download the emulator. Permission-denied logs can be expected in tests that intentionally verify rejected access; check the final test results.
+
+Tests are not a substitute for browser checks of responsive layouts, keyboard navigation, focus, and loading behavior.
+
+## Routes
+
+| Route | Page |
+| --- | --- |
+| `/` | Featured slider and movie catalog |
+| `/tv` | TV catalog |
+| `/movies/:id` | Movie details |
+| `/tv/:id` | TV details |
+| `/tv/:id/seasons/:seasonNumber` | Season and episodes |
+| `/people/:id` | Person profile |
+| `/login` | Login |
+| `/register` | Registration |
+| `/profile` | User profile |
+| `/favorites` | Mixed movie and TV favorites |
+
+Catalog filters use `q` and `genre` query parameters. A separate `/movies` catalog route is planned but is not implemented yet.
+
+## Project structure
+
+```text
 src/
-├── app/
-│   └── router.jsx              # Route configuration
-├── components/
-│   ├── common/                 # Reusable UI components
-│   ├── layout/                 # Layout components
-│   └── movie/                  # Movie-specific components
-├── features/
-│   ├── auth/                   # Authentication feature
-│   ├── favorites/              # Favorites management
-│   ├── movies/                 # Movies browsing feature
-│   └── profile/                # User profile feature
-├── hooks/                      # Custom React hooks
-├── lib/                        # External library configurations
-├── routes/                     # Route utilities
-├── styles/                     # Global styles
-├── utils/                      # Utility functions
-├── main.jsx                    # Application entry point
-└── index.css                   # Global CSS
+  app/                  Route definitions and lazy route components
+  components/
+    common/             Shared controls and loading/navigation helpers
+    layout/             Main layout and navbar
+    media/              Shared movie/TV cards and recommendations
+    movie/              Movie cards, slider, search, and favorite button
+  features/
+    auth/               Authentication, forms, and session context
+    favorites/          Storage, queries, mutations, and favorites page
+    movies/             Movie API, hooks, pages, and detail sections
+    people/             Person profiles, filmography, and gallery
+    profile/            User profile and editing modal
+    tv/                 TV catalog, details, seasons, and episodes
+  hooks/                Shared React hooks
+  lib/                  Firebase, Axios, and QueryClient configuration
+  routes/               Authentication route wrapper
+  test/                 Tests and test setup
+  utils/                Image, identity, formatting, and navigation helpers
 ```
 
-For detailed information about each file and module, see [development.md](development.md).
+## Data and access control
 
-## 🔐 Authentication Flow
+Favorites currently use a map in `users/{uid}`. Legacy movie keys remain numeric strings, while TV keys use a `tv:` prefix, for example `"550"` and `"tv:550"`.
 
-1. User registers/logs in via Firebase Authentication
-2. AuthContext provides user state throughout the app
-3. Protected routes check authentication status
-4. User data synced with Firestore database
+Firestore rules restrict document access to the owner, allow only the `favorites` top-level field containing a map, and deny listing or deleting user documents. The rules do not currently validate every nested favorite entry. Client-side route checks are a UI concern; Firestore rules enforce database access.
 
-## 🎯 Key Features Explained
+Query keys separate user-specific favorites by UID and media details by type and ID. Firestore code is loaded on demand, and several route pages are lazy-loaded to reduce the initial JavaScript bundle.
 
-### Movie Search
+## Accessibility and current limitations
 
-- Debounced search to optimize API calls
-- Real-time search results display
-- Search results navigation
+The interface includes labeled controls, visible focus styles, loading/error announcements, and keyboard-operable links and buttons. Accessibility work targets WCAG 2.2 AA, but the project has not undergone a complete conformance audit.
 
-### Favorites
+Remaining work includes:
 
-- Add/remove movies from favorites
-- Favorites stored in Firestore
-- Quick access from profile
+- Restore catalog scroll position when navigating back.
+- Improve slider pause controls and reduced-motion behavior.
+- Separate Home discovery content from the movie search catalog.
+- Reduce unnecessary catalog requests and stabilize large favorites collections.
+- Expand browser-level regression coverage and mobile accessibility checks.
+- Add an SEO strategy for metadata, social previews, and indexing.
 
-### Movie Details
+Watchlist and watched-status tracking are future features and are not currently available.
 
-- Comprehensive movie information
-- Cast and crew information
-- Related videos and similar movies
-- Professional presentation
+## Production build
 
-## 🤝 Contributing
+```bash
+npm run build
+```
 
-1. Create a feature branch
-2. Make your changes
-3. Run `npm run lint` to check code quality
-4. Commit your changes
-5. Push to the branch
-6. Create a Pull Request
+The output is generated in `dist/`. Build-time environment values must be available when the bundle is created. A production host must serve `index.html` for application routes so direct links and refreshes work with browser routing. `npm run preview` is for local build verification, not a production server.
 
-## 📝 License
+## Development workflow
 
-This project is open source and available under the MIT License.
+1. Make one coherent change at a time.
+2. Add or update tests for changed behavior.
+3. Run lint, relevant tests, and the production build. Run emulator tests for database access changes.
+4. Check affected flows in the browser, including mobile and keyboard use.
+5. Review the diff and create a descriptive commit.
 
-## 🆘 Support
+## Attribution
 
-For issues or questions, please open an issue in the repository.
+This product uses the TMDB API but is not endorsed or certified by TMDB. Metadata and imagery are supplied by TMDB.
 
-## 🤖 AI-Assisted Development
-
-This project was developed with the assistance of AI tools including:
-
-- Code generation and optimization
-- Architecture planning and best practices
-- Documentation generation
-- Testing assistance
-- Code review and quality assurance
-
-The use of AI has helped ensure clean, maintainable code and comprehensive documentation while accelerating the development process.
-
-## 🔗 Resources
-
-- [TMDB API Documentation](https://developer.themoviedb.org/docs)
-- [Firebase Documentation](https://firebase.google.com/docs)
-- [React Documentation](https://react.dev)
-- [Vite Documentation](https://vitejs.dev)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [TMDB documentation](https://developer.themoviedb.org/docs)
+- [Firebase documentation](https://firebase.google.com/docs)
+- [React documentation](https://react.dev)
+- [React Router documentation](https://reactrouter.com)
+- [TanStack Query documentation](https://tanstack.com/query/latest)
+- [Vitest documentation](https://vitest.dev)
