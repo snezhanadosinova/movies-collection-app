@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import FavoriteButton from "@/components/movie/FavoriteButton";
-import { getTmdbBackdropUrl, getTmdbImageUrl } from "@/utils/tmdbImages";
+import { getTmdbBackdropUrl, getTmdbBackdropSrcSet, getTmdbImageUrl } from "@/utils/tmdbImages";
 
-export function MovieHeroSection({ movie, loading = false }) {
+export function MovieHeroSection({ movie, loading = false, navigation }) {
   const title = movie?.title || "Untitled movie";
   const genres = movie?.genres ?? [];
 
@@ -31,16 +31,20 @@ export function MovieHeroSection({ movie, loading = false }) {
       {!loading && movie?.backdrop_path && (
         <img
           src={getTmdbBackdropUrl(movie.backdrop_path)}
+          srcSet={getTmdbBackdropSrcSet(movie.backdrop_path)}
+          sizes="100vw"
           alt=""
           aria-hidden="true"
           fetchPriority="high"
-          className="absolute inset-0 -z-20 h-full w-full object-cover"
+          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-50"
         />
       )}
 
-      <div className="absolute inset-0 -z-10 bg-linear-to-t from-black via-black/85 to-black/60" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-t from-black via-black/50 to-black/30" />
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-10 lg:px-8 lg:py-14">
+      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {navigation && <div className="mb-6">{navigation}</div>}
+        <div className="grid items-start gap-8 md:grid-cols-[260px_minmax(0,1fr)]">
         <div className="mx-auto aspect-[2/3] w-36 overflow-hidden rounded-2xl bg-zinc-800 shadow-xl sm:w-44 lg:mx-0 lg:w-full">
           {loading ? (
             <div className="h-full animate-pulse bg-zinc-800 motion-reduce:animate-none" />
@@ -129,6 +133,7 @@ export function MovieHeroSection({ movie, loading = false }) {
             </>
           )}
         </div>
+      </div>
       </div>
     </section>
   );

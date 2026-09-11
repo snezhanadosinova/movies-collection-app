@@ -1,4 +1,5 @@
-import { Link, useParams } from "react-router-dom";
+import { getPersonReturnState } from "@/utils/personReturn";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
 import { useTvSeason } from "../hooks/useTvSeason";
 import { formatTvDate } from "../utils/tvDetails";
@@ -10,6 +11,8 @@ const retryClass = focusClass + " mt-4 min-h-11 bg-red-500 px-5 py-2 disabled:op
 
 export default function TvSeasonPage() {
   const { id, seasonNumber } = useParams();
+  const location = useLocation();
+  const returnState = getPersonReturnState(location.state);
   const { data: season, isPending, isError, isInvalidParams, error, isFetching, refetch } =
     useTvSeason(id, seasonNumber);
 
@@ -35,7 +38,7 @@ export default function TvSeasonPage() {
             {isFetching ? "Retrying..." : "Retry"}
           </button>
         )}
-        <Link to={backTo} className={focusClass + " mt-6 block w-fit py-3 text-red-400"}>
+        <Link to={backTo} state={returnState} replace className={focusClass + " mt-6 block w-fit py-3 text-red-400"}>
           {backLabel}
         </Link>
       </div>
@@ -50,7 +53,7 @@ export default function TvSeasonPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 text-white sm:px-6">
-      <Link to={backTo} className={focusClass + " mb-8 inline-flex min-h-11 items-center text-zinc-300"}>
+      <Link to={backTo} state={returnState} replace className={focusClass + " mb-8 inline-flex min-h-11 items-center text-zinc-300"}>
         ← {backLabel}
       </Link>
 

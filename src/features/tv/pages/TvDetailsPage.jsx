@@ -1,3 +1,4 @@
+import { getPersonReturnState } from "@/utils/personReturn";
 import FavoriteButton from "@/components/movie/FavoriteButton";
 import { Link, useLocation, useParams } from "react-router-dom";
 import RecommendationsSection from "@/components/media/RecommendationsSection";
@@ -25,10 +26,9 @@ const retryClass =
 export default function TvDetailsPage() {
   const { id } = useParams();
   const location = useLocation();
-  const fromPerson = location.state?.fromPerson;
-  const hasPersonOrigin =
-    typeof fromPerson === "string" &&
-    /^\/people\/[1-9]\d*(?:[?#].*)?$/.test(fromPerson);
+  const returnState = getPersonReturnState(location.state);
+  const fromPerson = returnState?.fromPerson;
+  const hasPersonOrigin = Boolean(fromPerson);
   const backTo = hasPersonOrigin ? fromPerson : "/tv";
   const backLabel = hasPersonOrigin ? "Back to actor" : "TV Series";
   const {
@@ -193,6 +193,7 @@ export default function TvDetailsPage() {
                       <li key={person.id}>
                         <Link
                           to={`/people/${person.id}`}
+                          state={{ fromMedia: location.pathname + location.search + location.hash }}
                           className={
                             focus +
                             " inline-flex min-h-11 items-center text-red-400"
@@ -260,6 +261,7 @@ export default function TvDetailsPage() {
                 <li key={season.season_number}>
                   <Link
                     to={`/tv/${series.id}/seasons/${season.season_number}`}
+                    state={returnState}
                     className={
                       focus +
                       " flex h-full gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-colors hover:border-zinc-600 hover:bg-zinc-800"

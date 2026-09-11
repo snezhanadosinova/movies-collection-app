@@ -1,4 +1,5 @@
-import { Link, useParams } from "react-router-dom";
+import { getMediaReturnPath } from "@/utils/mediaReturn";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
 import { usePersonDetails } from "../hooks/usePersonDetails";
@@ -162,6 +163,12 @@ function PersonProfile({ person }) {
 
 export default function PersonDetailsPage() {
   const { id } = useParams();
+  const location = useLocation();
+  const fromMedia = getMediaReturnPath(location.state);
+  const backTo = fromMedia ?? "/";
+  const backLabel = fromMedia
+    ? fromMedia.startsWith("/movies/") ? "Back to movie" : "Back to series"
+    : "Browse movies";
 
   const {
     data: person,
@@ -204,10 +211,10 @@ export default function PersonDetailsPage() {
         )}
 
         <Link
-          to="/"
+          to={backTo} replace={Boolean(fromMedia)}
           className={`${focusClassName} mt-6 block w-fit py-3 text-red-400`}
         >
-          Browse movies
+          <span aria-hidden="true" className="mr-1">←</span>{backLabel}
         </Link>
       </div>
     );
@@ -216,10 +223,10 @@ export default function PersonDetailsPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 text-white sm:px-6 lg:px-8">
       <Link
-        to="/"
+        to={backTo} replace={Boolean(fromMedia)}
         className={`${focusClassName} mb-8 inline-flex min-h-11 items-center text-sm text-zinc-400 hover:text-white`}
       >
-        ← Browse movies
+        <span aria-hidden="true" className="mr-1">←</span>{backLabel}
       </Link>
 
       {isError && (

@@ -1,10 +1,11 @@
 import { useId, useState } from "react";
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const PAGE_SIZE = 6;
 
 export function MovieCastSection({ cast = [] }) {
+  const location = useLocation();
   const [page, setPage] = useState(0);
   const listId = useId();
 
@@ -75,6 +76,7 @@ export function MovieCastSection({ cast = [] }) {
               >
                 <Link
                   to={`/people/${person.id}`}
+                  state={{ fromMedia: location.pathname + location.search + location.hash }}
                   className="
                     block h-full rounded-xl
                     transition-colors hover:bg-zinc-800

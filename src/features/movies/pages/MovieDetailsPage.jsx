@@ -1,4 +1,5 @@
-import { Link, useParams } from "react-router-dom";
+import { getPersonReturnState } from "@/utils/personReturn";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 import { useMovieDetails } from "../hooks/useMovieDetails";
 import { MovieHeroSection } from "../components/MovieHeroSection";
@@ -9,6 +10,19 @@ import { selectRelatedMovies, selectTrailer } from "@/utils/movieDetails";
 
 function MovieDetailsPage() {
   const { id } = useParams();
+  const location = useLocation();
+  const returnState = getPersonReturnState(location.state);
+  const backTo = returnState?.fromPerson ?? "/";
+  const backLabel = returnState ? "Back to actor" : "Browse movies";
+  const backLink = (
+    <Link
+      to={backTo}
+      replace={Boolean(returnState)}
+      className="inline-flex min-h-11 items-center rounded py-2 text-zinc-300 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
+    >
+      <span aria-hidden="true" className="mr-1">←</span>{backLabel}
+    </Link>
+  );
 
   const {
     data: movie,
@@ -31,23 +45,19 @@ function MovieDetailsPage() {
           This movie is unavailable or the address is incorrect.
         </p>
 
-        <Link
-          to="/"
-          className="mt-6 inline-block rounded-xl bg-red-500 px-5 py-3 font-semibold"
-        >
-          Browse movies
-        </Link>
+        <div className="mt-6">{backLink}</div>
       </div>
     );
   }
 
   if (isLoading) {
-    return <MovieHeroSection loading />;
+    return <MovieHeroSection loading navigation={backLink} />;
   }
 
   if (!movie) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        {backLink}
         <h1 className="text-3xl font-bold">Could not load this movie</h1>
 
         <p role="alert" className="mt-3 text-zinc-400">
@@ -73,7 +83,8 @@ function MovieDetailsPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <MovieHeroSection movie={movie} />
+
+      <MovieHeroSection movie={movie} navigation={backLink} />
 
       <div className="mx-auto max-w-7xl space-y-12 px-4 py-10 sm:px-6 lg:space-y-16 lg:px-8">
         {isError && (
