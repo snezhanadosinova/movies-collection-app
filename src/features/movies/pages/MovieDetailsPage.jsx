@@ -12,7 +12,7 @@ function MovieDetailsPage() {
   const { id } = useParams();
   const location = useLocation();
   const returnState = getPersonReturnState(location.state);
-  const backTo = returnState?.fromPerson ?? "/";
+  const backTo = returnState?.fromPerson ?? "/movies";
   const backLabel = returnState ? "Back to actor" : "Browse movies";
   const backLink = (
     <Link

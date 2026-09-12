@@ -165,7 +165,7 @@ export default function PersonDetailsPage() {
   const { id } = useParams();
   const location = useLocation();
   const fromMedia = getMediaReturnPath(location.state);
-  const backTo = fromMedia ?? "/";
+  const backTo = fromMedia ?? "/movies";
   const backLabel = fromMedia
     ? fromMedia.startsWith("/movies/") ? "Back to movie" : "Back to series"
     : "Browse movies";

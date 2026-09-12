@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import HomePage from "@/features/movies/pages/HomePage";
+import MovieCatalogPage from "@/features/movies/pages/MovieCatalogPage";
 import { useMovieFilter } from "@/features/movies/hooks/useMovieFilter";
 
 vi.mock("@/features/movies/hooks/useMovieFilter", () => ({
@@ -67,12 +67,12 @@ beforeEach(() => {
   vi.mocked(useMovieFilter).mockReturnValue(filterState);
 });
 
-describe("HomePage pagination", () => {
+describe("MovieCatalogPage pagination", () => {
   it("allows retrying an initial loading failure", () => {
     filterState.movies = [];
     filterState.isError = true;
 
-    render(<HomePage />);
+    render(<MovieCatalogPage />);
 
     expect(screen.getByRole("alert").textContent).toBe(
       "Failed to load movies.",
@@ -94,7 +94,7 @@ describe("HomePage pagination", () => {
   it("preserves movies and allows retrying a failed next page", () => {
     filterState.isFetchNextPageError = true;
 
-    render(<HomePage />);
+    render(<MovieCatalogPage />);
 
     expect(screen.getByText("Existing movie")).not.toBeNull();
 
@@ -124,7 +124,7 @@ describe("HomePage pagination", () => {
     filterState.isFetching = true;
     filterState.isFetchingNextPage = true;
 
-    render(<HomePage />);
+    render(<MovieCatalogPage />);
 
     expect(screen.getByText("Existing movie")).not.toBeNull();
 
@@ -140,7 +140,7 @@ describe("HomePage pagination", () => {
   });
 
   it("enables automatic pagination when another page is available", () => {
-    render(<HomePage />);
+    render(<MovieCatalogPage />);
 
     expect(
       screen.getByTestId("infinite-scroll-trigger"),
@@ -150,7 +150,7 @@ describe("HomePage pagination", () => {
   it("removes the trigger after the last page", () => {
     filterState.hasNextPage = false;
 
-    render(<HomePage />);
+    render(<MovieCatalogPage />);
 
     expect(screen.getByText("Existing movie")).not.toBeNull();
 

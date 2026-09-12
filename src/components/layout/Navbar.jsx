@@ -42,8 +42,12 @@ function Navbar() {
         aria-label="Main navigation"
         className="mx-auto flex min-h-20 max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3"
       >
-        <div className="flex items-center gap-4">
-        <NavLink to="/" className={({ isActive }) =>
+        <div className="flex flex-wrap items-center gap-4">
+          <NavLink to="/" end className={({ isActive }) =>
+            "inline-flex min-h-11 items-center rounded text-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400 hover:underline " +
+            (isActive ? "text-red-400 font-bold" : "text-white hover:text-red-400")
+          }>Home</NavLink>
+        <NavLink to="/movies" className={({ isActive }) =>
             "inline-flex min-h-11 items-center rounded text-xl focus-visible:outline-2 focus-visible:outline-red-400 hover:underline " +
             (isActive ? "text-red-400 font-bold" : "text-white hover:text-red-400")
           }>

@@ -105,7 +105,7 @@ export function MovieHeroSection({ movie, loading = false, navigation }) {
               <div className="mt-5 flex flex-wrap items-center gap-2">
                 {genres.map((genre) => (
                   <Link
-                    to={`/?genre=${genre.id}`}
+                    to={`/movies?genre=${genre.id}`}
                     key={genre.id}
                     className="rounded-full border border-white/15 px-3 py-1 text-sm text-zinc-200 hover:bg-zinc-800"
                   >

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import HomePage from "@/features/movies/pages/HomePage";
+import MovieCatalogPage from "@/features/movies/pages/MovieCatalogPage";
 import { useMovieFilter } from "@/features/movies/hooks/useMovieFilter";
 
 vi.mock("@/features/movies/hooks/useMovieFilter", () => ({
@@ -53,7 +53,7 @@ let filterState;
 function renderSearch(overrides = {}) {
   Object.assign(filterState, overrides);
 
-  return render(<HomePage />);
+  return render(<MovieCatalogPage />);
 }
 
 beforeEach(() => {
@@ -82,7 +82,7 @@ beforeEach(() => {
   vi.mocked(useMovieFilter).mockImplementation(() => filterState);
 });
 
-describe("HomePage search states", () => {
+describe("MovieCatalogPage search states", () => {
   it("shows a skeleton during the initial request without an empty message", () => {
     renderSearch({
       isLoading: true,
@@ -109,7 +109,7 @@ describe("HomePage search states", () => {
       isFetching: false,
     };
 
-    rerender(<HomePage />);
+    rerender(<MovieCatalogPage />);
 
     expect(screen.queryByTestId("movie-grid-skeleton")).toBeNull();
     expect(screen.queryByText("Searching more results...")).toBeNull();

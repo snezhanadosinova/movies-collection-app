@@ -11,7 +11,7 @@ export default function MovieSlide({ movie, genreMap, priority = false }) {
         <img
           src={getTmdbBackdropUrl(movie.backdrop_path)}
           srcSet={getTmdbBackdropSrcSet(movie.backdrop_path)}
-          sizes="(min-width: 1280px) 1200px, calc(100vw - 80px)"
+          sizes="100vw"
           alt={movie.title}
           className="absolute inset-0 h-full w-full object-cover"
           loading={priority ? "eager" : "lazy"}
@@ -28,7 +28,7 @@ export default function MovieSlide({ movie, genreMap, priority = false }) {
       {/* Slide content */}
       <div className="relative z-10 flex h-full items-center px-8 md:px-20">
         <div className="max-w-2xl text-white">
-          <h1 className="mb-4 text-3xl font-bold md:text-7xl">{movie.title}</h1>
+          <h2 className="mb-4 text-3xl font-bold md:text-7xl">{movie.title}</h2>
 
           <p className="mb-6 line-clamp-2 text-lg leading-relaxed text-gray-300">
             {movie.overview}
@@ -37,7 +37,7 @@ export default function MovieSlide({ movie, genreMap, priority = false }) {
           <div className="my-4 flex flex-wrap gap-3">
             {(movie.genre_ids ?? []).map((genreId) => (
               <Link
-                to={`/?genre=${genreId}`}
+                to={`/movies?genre=${genreId}`}
                 key={genreId}
                 className="inline-flex items-center gap-x-1.5 rounded-full bg-red-500 px-2 py-1 text-xs font-medium text-white"
               >

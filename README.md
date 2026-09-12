@@ -156,7 +156,8 @@ Tests are not a substitute for browser checks of responsive layouts, keyboard na
 
 | Route | Page |
 | --- | --- |
-| `/` | Featured slider and movie catalog |
+| / | Featured slider and popular movies and TV series |
+| /movies | Movie search and genre catalog |
 | `/tv` | TV catalog |
 | `/movies/:id` | Movie details |
 | `/tv/:id` | TV details |
@@ -167,7 +168,7 @@ Tests are not a substitute for browser checks of responsive layouts, keyboard na
 | `/profile` | User profile |
 | `/favorites` | Mixed movie and TV favorites |
 
-Catalog filters use `q` and `genre` query parameters. A separate `/movies` catalog route is planned but is not implemented yet.
+Catalog filters use `q` and `genre` query parameters. Legacy home URLs containing `q` or `genre` redirect to `/movies` with their parameters preserved.
 
 ## Project structure
 
@@ -209,7 +210,7 @@ Remaining work includes:
 
 - Restore catalog scroll position when navigating back.
 - Improve slider pause controls and reduced-motion behavior.
-- Separate Home discovery content from the movie search catalog.
+- Refine Home discovery content and catalog navigation.
 - Reduce unnecessary catalog requests and stabilize large favorites collections.
 - Expand browser-level regression coverage and mobile accessibility checks.
 - Add an SEO strategy for metadata, social previews, and indexing.

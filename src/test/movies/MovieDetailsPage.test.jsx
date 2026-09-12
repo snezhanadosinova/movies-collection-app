@@ -82,7 +82,7 @@ describe("MovieDetailsPage", () => {
 
     expect(
       screen.getByRole("link", { name: "Browse movies" }).getAttribute("href"),
-    ).toBe("/");
+    ).toBe("/movies");
 
     expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
   });

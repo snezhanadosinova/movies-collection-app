@@ -34,7 +34,7 @@ describe("return from actor to media", () => {
       render(<MemoryRouter initialEntries={[{ pathname: "/people/7", state: { fromMedia } }]}>
         <Routes><Route path="/people/:id" element={<PersonDetailsPage />} /></Routes>
       </MemoryRouter>);
-      expect(screen.getByRole("link", { name: "Browse movies" }).getAttribute("href")).toBe("/");
+      expect(screen.getByRole("link", { name: "Browse movies" }).getAttribute("href")).toBe("/movies");
     },
   );
 });

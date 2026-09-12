@@ -4,7 +4,7 @@ import { getTmdbImageUrl } from "@/utils/tmdbImages";
 
 const PAGE_SIZE = 6;
 
-export default function RecommendationsSection({ items = [], mediaType = "movie" }) {
+export default function RecommendationsSection({ items = [], mediaType = "movie", title = "More like this", description = "Suggestions from TMDB" }) {
   const sectionId = useId();
   const visibleItems = items.slice(0, PAGE_SIZE);
   const isTv = mediaType === "tv";
@@ -13,8 +13,8 @@ export default function RecommendationsSection({ items = [], mediaType = "movie"
     <section aria-labelledby={sectionId + "-heading"}>
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 id={sectionId + "-heading"} className="text-2xl font-bold">More like this</h2>
-          <p className="mt-2 text-sm text-zinc-400">Suggestions from TMDB</p>
+          <h2 id={sectionId + "-heading"} className="text-2xl font-bold">{title}</h2>
+          <p className="mt-2 text-sm text-zinc-400">{description}</p>
         </div>
       </div>
       {items.length === 0 ? (

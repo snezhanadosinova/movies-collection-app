@@ -105,3 +105,8 @@ export function TvSeasonRoute() {
     </Suspense>
   );
 }
+const LazyMovieCatalogPage = lazy(() => import("@/features/movies/pages/MovieCatalogPage"));
+
+export function MovieCatalogRoute() {
+  return <PageBoundary><LazyMovieCatalogPage /></PageBoundary>;
+}

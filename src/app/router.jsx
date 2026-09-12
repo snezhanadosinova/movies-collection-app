@@ -5,6 +5,7 @@ import HomePage from "@/features/movies/pages/HomePage";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 
 import {
+  MovieCatalogRoute,
   TvCatalogRoute,
   TvDetailsRoute,
   TvSeasonRoute,
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
 
     children: [
+      { path: "movies", element: <MovieCatalogRoute /> },
       { path: "tv/:id/seasons/:seasonNumber", element: <TvSeasonRoute /> },
       { path: "tv/:id", element: <TvDetailsRoute /> },
       { path: "tv", element: <TvCatalogRoute /> },
