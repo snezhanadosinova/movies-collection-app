@@ -1,3 +1,5 @@
+import { getCatalogReturn } from "@/utils/scrollReturn";
+import { getScrollKey } from "@/utils/scrollReturn";
 import { getPersonReturnState } from "@/utils/personReturn";
 import FavoriteButton from "@/components/movie/FavoriteButton";
 import { Link, useLocation, useParams } from "react-router-dom";
@@ -29,7 +31,7 @@ export default function TvDetailsPage() {
   const returnState = getPersonReturnState(location.state);
   const fromPerson = returnState?.fromPerson;
   const hasPersonOrigin = Boolean(fromPerson);
-  const backTo = hasPersonOrigin ? fromPerson : "/tv";
+  const backTo = hasPersonOrigin ? fromPerson : getCatalogReturn(location.state, "/tv");
   const backLabel = hasPersonOrigin ? "Back to actor" : "TV Series";
   const {
     data: series,
@@ -66,7 +68,7 @@ export default function TvDetailsPage() {
           </button>
         )}
         <Link
-          to={backTo} replace={hasPersonOrigin}
+          to={backTo} state={{ restoreScrollKey: hasPersonOrigin ? returnState.fromPersonKey : location.state?.fromCatalogKey }} replace={hasPersonOrigin}
           className={focus + " mt-6 block w-fit py-3 text-red-400"}
         >
           {hasPersonOrigin ? backLabel : "Browse TV series"}
@@ -119,7 +121,7 @@ export default function TvDetailsPage() {
         />
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <Link
-            to={backTo} replace={hasPersonOrigin}
+            to={backTo} state={{ restoreScrollKey: hasPersonOrigin ? returnState.fromPersonKey : location.state?.fromCatalogKey }} replace={hasPersonOrigin}
             className={
               focus + " mb-6 inline-flex min-h-11 items-center text-zinc-300"
             }
@@ -193,7 +195,7 @@ export default function TvDetailsPage() {
                       <li key={person.id}>
                         <Link
                           to={`/people/${person.id}`}
-                          state={{ fromMedia: location.pathname + location.search + location.hash }}
+                          state={{ fromMedia: location.pathname + location.search + location.hash, fromMediaKey: getScrollKey(location) }}
                           className={
                             focus +
                             " inline-flex min-h-11 items-center text-red-400"
@@ -261,7 +263,7 @@ export default function TvDetailsPage() {
                 <li key={season.season_number}>
                   <Link
                     to={`/tv/${series.id}/seasons/${season.season_number}`}
-                    state={returnState}
+                    state={{ ...returnState, fromSeriesKey: getScrollKey(location) }}
                     className={
                       focus +
                       " flex h-full gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-colors hover:border-zinc-600 hover:bg-zinc-800"

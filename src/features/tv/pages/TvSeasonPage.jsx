@@ -38,7 +38,7 @@ export default function TvSeasonPage() {
             {isFetching ? "Retrying..." : "Retry"}
           </button>
         )}
-        <Link to={backTo} state={returnState} replace className={focusClass + " mt-6 block w-fit py-3 text-red-400"}>
+        <Link to={backTo} state={{ ...returnState, restoreScrollKey: location.state?.fromSeriesKey }} replace className={focusClass + " mt-6 block w-fit py-3 text-red-400"}>
           {backLabel}
         </Link>
       </div>
@@ -53,7 +53,7 @@ export default function TvSeasonPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 text-white sm:px-6">
-      <Link to={backTo} state={returnState} replace className={focusClass + " mb-8 inline-flex min-h-11 items-center text-zinc-300"}>
+      <Link to={backTo} state={{ ...returnState, restoreScrollKey: location.state?.fromSeriesKey }} replace className={focusClass + " mb-8 inline-flex min-h-11 items-center text-zinc-300"}>
         ← {backLabel}
       </Link>
 

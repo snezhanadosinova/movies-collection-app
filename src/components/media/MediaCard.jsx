@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { getScrollKey } from "@/utils/scrollReturn";
+import { Link, useLocation } from "react-router-dom";
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
 
 function MediaCard({ title, to, posterPath, voteAverage, action }) {
+  const location = useLocation();
   const rating = Number.isFinite(voteAverage)
     ? voteAverage.toFixed(1)
     : "Not rated";
@@ -10,6 +12,7 @@ function MediaCard({ title, to, posterPath, voteAverage, action }) {
     <article className="relative min-w-0 rounded-xl bg-zinc-900">
       <Link
         to={to}
+        state={{ fromCatalog: location.pathname + location.search + location.hash, fromCatalogKey: getScrollKey(location) }}
         className="group block overflow-hidden rounded-xl
                    focus-visible:outline-2 focus-visible:outline-offset-4
                    focus-visible:outline-red-400"

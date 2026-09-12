@@ -1,3 +1,4 @@
+import { getScrollKey } from "@/utils/scrollReturn";
 import { useId, useState } from "react";
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
 import { Link, useLocation } from "react-router-dom";
@@ -76,7 +77,7 @@ export function MovieCastSection({ cast = [] }) {
               >
                 <Link
                   to={`/people/${person.id}`}
-                  state={{ fromMedia: location.pathname + location.search + location.hash }}
+                  state={{ fromMedia: location.pathname + location.search + location.hash, fromMediaKey: getScrollKey(location) }}
                   className="
                     block h-full rounded-xl
                     transition-colors hover:bg-zinc-800

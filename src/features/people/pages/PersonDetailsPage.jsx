@@ -211,7 +211,7 @@ export default function PersonDetailsPage() {
         )}
 
         <Link
-          to={backTo} replace={Boolean(fromMedia)}
+          to={backTo} state={{ restoreScrollKey: fromMedia ? location.state?.fromMediaKey : undefined }} replace={Boolean(fromMedia)}
           className={`${focusClassName} mt-6 block w-fit py-3 text-red-400`}
         >
           <span aria-hidden="true" className="mr-1">←</span>{backLabel}
@@ -223,7 +223,7 @@ export default function PersonDetailsPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 text-white sm:px-6 lg:px-8">
       <Link
-        to={backTo} replace={Boolean(fromMedia)}
+        to={backTo} state={{ restoreScrollKey: fromMedia ? location.state?.fromMediaKey : undefined }} replace={Boolean(fromMedia)}
         className={`${focusClassName} mb-8 inline-flex min-h-11 items-center text-sm text-zinc-400 hover:text-white`}
       >
         <span aria-hidden="true" className="mr-1">←</span>{backLabel}

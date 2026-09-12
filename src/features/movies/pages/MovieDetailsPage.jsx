@@ -1,3 +1,4 @@
+import { getCatalogReturn } from "@/utils/scrollReturn";
 import { getPersonReturnState } from "@/utils/personReturn";
 import { Link, useLocation, useParams } from "react-router-dom";
 
@@ -12,11 +13,12 @@ function MovieDetailsPage() {
   const { id } = useParams();
   const location = useLocation();
   const returnState = getPersonReturnState(location.state);
-  const backTo = returnState?.fromPerson ?? "/movies";
+  const backTo = returnState?.fromPerson ?? getCatalogReturn(location.state, "/movies");
   const backLabel = returnState ? "Back to actor" : "Browse movies";
   const backLink = (
     <Link
       to={backTo}
+      state={{ restoreScrollKey: returnState?.fromPersonKey ?? location.state?.fromCatalogKey }}
       replace={Boolean(returnState)}
       className="inline-flex min-h-11 items-center rounded py-2 text-zinc-300 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
     >

@@ -1,3 +1,4 @@
+import { getScrollKey } from "@/utils/scrollReturn";
 import { useId, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -140,7 +141,7 @@ export function PersonFilmography({ credits }) {
                 <Link
                   to={`/${title.mediaType === "tv" ? "tv" : "movies"}/${title.id}`}
                   state={{
-                    fromPerson: location.pathname + location.search + location.hash,
+                    fromPerson: location.pathname + location.search + location.hash, fromPersonKey: getScrollKey(location),
                   }}
                   className={linkClassName}
                 >
