@@ -49,7 +49,7 @@ export default function MovieSlide({ movie, genreMap, priority = false }) {
           <button
             type="button"
             onClick={() => navigate(`/movies/${movie.id}`)}
-            className="rounded-lg border-2 border-red-500 px-8 py-4 font-semibold text-red-500 transition hover:bg-red-500 hover:text-black"
+            className="rounded-lg border-2 border-red-500 px-6 py-2 font-semibold text-red-500 transition hover:bg-red-500 hover:text-black mt-6"
           >
             More Details
           </button>
