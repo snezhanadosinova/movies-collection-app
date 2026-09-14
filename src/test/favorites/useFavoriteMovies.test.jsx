@@ -1,17 +1,19 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useFavoriteMovies } from "@/features/favorites/hooks/useFavoriteMovies";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 import { getFavoriteMediaItem } from "@/features/favorites/api/getFavoriteMovies";
 
+const session = vi.hoisted(() => ({ user: { uid: "alice" } }));
 vi.mock("@/features/auth/context/useAuth", () => ({
-  useAuth: () => ({ user: { uid: "alice" } }),
+  useAuth: () => session,
 }));
 vi.mock("@/features/favorites/hooks/useFavorites", () => ({ useFavorites: vi.fn() }));
 vi.mock("@/features/favorites/api/getFavoriteMovies", () => ({ getFavoriteMediaItem: vi.fn() }));
 
 beforeEach(() => {
+  session.user = { uid: "alice" };
   vi.mocked(useFavorites).mockReturnValue({
     data: { 42: true, "tv:42": true }, isSuccess: true,
     isPending: false, isFetching: false, isError: false, refetch: vi.fn(),
@@ -31,6 +33,23 @@ function setup() {
 }
 
 describe("useFavoriteMovies mixed data", () => {
+  it("keeps pending slots in order and ignores an old account's late result", async () => {
+    let finish;
+    const pending = new Promise((resolve) => { finish = resolve; });
+    vi.mocked(getFavoriteMediaItem).mockReturnValue(pending);
+    const { result, rerender, dispose } = setup();
+    try {
+      await waitFor(() => expect(getFavoriteMediaItem).toHaveBeenCalledTimes(2));
+      expect(result.current.slots.map((slot) => slot.media_type)).toEqual(["movie", "tv"]);
+      expect(result.current.slots.every((slot) => slot.isPending)).toBe(true);
+      session.user = { uid: "bob" };
+      vi.mocked(useFavorites).mockReturnValue({ data: {}, isSuccess: true, isPending: false });
+      rerender();
+      await act(async () => { finish({ id: 42, title: "Alice favorite" }); await pending; });
+      expect(result.current.data).toEqual([]);
+      expect(result.current.slots).toEqual([]);
+    } finally { finish({ id: 42 }); dispose(); }
+  });
   it("removes a title immediately and reuses the remaining title's cache", async () => {
     const { result, rerender, dispose } = setup();
     try {

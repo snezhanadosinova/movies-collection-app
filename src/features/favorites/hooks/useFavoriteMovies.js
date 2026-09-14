@@ -1,3 +1,4 @@
+import { queueFavoriteRequest } from "../utils/requestQueue";
 import { useQueries } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth/context/useAuth";
 import { getFavoriteMediaItem } from "../api/getFavoriteMovies";
@@ -12,7 +13,7 @@ export const useFavoriteMovies = () => {
   const queries = useQueries({
     queries: entries.map((entry) => ({
       queryKey: ["favorite-media", user.uid, entry.mediaType, entry.id],
-      queryFn: ({ signal }) => getFavoriteMediaItem(entry, signal),
+      queryFn: ({ signal }) => queueFavoriteRequest(() => getFavoriteMediaItem(entry, signal), signal),
       enabled: favoritesQuery.isSuccess,
     })),
   });
@@ -22,6 +23,13 @@ export const useFavoriteMovies = () => {
 
   return {
     data,
+    slots: entries.map((entry, index) => ({
+      id: entry.id,
+      media_type: entry.mediaType,
+      item: queries[index].data,
+      isPending: queries[index].isPending,
+      isError: queries[index].isError,
+    })),
     isLoading: favoritesQuery.isPending ||
       (data.length === 0 && queries.some((query) => query.isPending)),
     isFetching,

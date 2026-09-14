@@ -6,8 +6,8 @@ import { useFavoriteMovies } from "../hooks/useFavoriteMovies";
 export default function FavoritesPage() {
   const [filter, setFilter] = useState("all");
   const filterId = useId();
-  const { data: items = [], isLoading, isError, isFetching, refetch } = useFavoriteMovies();
-  const visibleItems = items.filter((item) => filter === "all" || (item.media_type || "movie") === filter);
+  const { data: items = [], slots, isLoading, isError, isFetching, refetch } = useFavoriteMovies();
+  const visibleItems = (slots ?? items.map((item) => ({ ...item, item }))).filter((item) => filter === "all" || (item.media_type || "movie") === filter);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 text-white sm:px-6">
@@ -28,9 +28,21 @@ export default function FavoritesPage() {
         </button>
       </div>}
 
-      {isLoading ? <MovieGridSkeleton /> : visibleItems.length > 0 ? (
+      {isLoading && !visibleItems.length ? <MovieGridSkeleton /> : visibleItems.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {visibleItems.map((item) => <FavoriteMediaCard key={`${item.media_type || "movie"}:${item.id}`} item={item} />)}
+          {visibleItems.map((slot) => (
+            <div key={`${slot.media_type || "movie"}:${slot.id}`}>
+              {slot.item ? <FavoriteMediaCard item={slot.item} /> : (
+                <div aria-busy={slot.isPending} className="min-h-[520px] rounded-xl bg-zinc-900">
+                  <div aria-hidden="true" className="mb-2 h-4" />
+                  <div aria-hidden="true" className={"h-[400px] rounded-xl bg-zinc-800 " + (slot.isPending ? "motion-safe:animate-pulse" : "")} />
+                  <p className="p-4 text-sm text-zinc-400">
+                    {slot.isError ? "Could not load this favorite. Use Retry above." : "Loading favorite..."}
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       ) : !isError && !isFetching ? (
         <div className="py-12 text-zinc-400">
