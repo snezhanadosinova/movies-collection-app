@@ -27,7 +27,7 @@ export function PersonDetailsSkeleton() {
 
       <div
         aria-hidden="true"
-        className="grid gap-8 motion-safe:animate-pulse md:grid-cols-[260px_1fr]"
+        className="grid gap-8 skeleton-pulse md:grid-cols-[260px_1fr]"
       >
         <div className="mx-auto aspect-[2/3] w-48 rounded-2xl bg-zinc-800 md:w-full" />
 

@@ -40,7 +40,7 @@ export function ProfileFavoritesPreview({ favoriteMovies = [], slots, loading = 
                     </div>
                   </Link>
                 ) : (
-                  <div className={"flex aspect-[2/3] items-center justify-center rounded bg-zinc-800 p-2 text-center text-xs text-zinc-300 " + (entry.isPending ? "motion-safe:animate-pulse" : "")}
+                  <div className={"flex aspect-[2/3] items-center justify-center rounded bg-zinc-800 p-2 text-center text-xs text-zinc-300 " + (entry.isPending ? "skeleton-pulse" : "")}
                     aria-hidden={entry.isPending ? "true" : undefined}>
                     {entry.isError ? "Could not load title" : null}
                   </div>

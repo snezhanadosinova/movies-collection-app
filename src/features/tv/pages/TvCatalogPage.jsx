@@ -30,7 +30,6 @@ export default function TvCatalogPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 text-white sm:px-6 lg:px-8">
       <h1 className="mb-3 text-3xl font-bold sm:text-4xl">{title}</h1>
-      <p className="mb-8 text-zinc-400">Discover your next series.</p>
 
       <div className="mb-8 grid gap-4 sm:grid-cols-[1fr_240px]">
         <div>
@@ -80,15 +79,16 @@ export default function TvCatalogPage() {
 
       {series.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {series.map((item) => (
+          {series.map((item, index) => (
             <MediaCard key={item.id} title={item.name || "Untitled series"}
               to={`/tv/${item.id}`}
+              eager={index < 4} priority={index === 0}
               posterPath={item.poster_path} voteAverage={item.vote_average}
               action={<FavoriteButton movieId={item.id} movieTitle={item.name} mediaType="tv" compact />} />
           ))}
         </div>
       ) : !query.isError && waiting ? (
-        <MovieGridSkeleton />
+        <MovieGridSkeleton label="Loading TV series" />
       ) : !query.isError ? (
         <p>{limitReached
           ? "No matches in the checked pages. Try a more specific title or another genre."
@@ -100,7 +100,7 @@ export default function TvCatalogPage() {
         Showing matches from the first {TV_SEARCH_PAGE_LIMIT} result pages. Try a more specific title to narrow the search.
       </p>}
 
-      {!isSearching && query.isFetchingNextPage && <div className="mt-6"><MovieGridSkeleton count={4} /></div>}
+      {!isSearching && query.isFetchingNextPage && <div className="mt-6"><MovieGridSkeleton count={4} label="Loading more TV series" /></div>}
       {!isSearching && series.length > 0 && query.hasNextPage &&
         !query.isFetching && !query.isError && !paused &&
         <InfiniteScrollTrigger onIntersect={loadMore} />}

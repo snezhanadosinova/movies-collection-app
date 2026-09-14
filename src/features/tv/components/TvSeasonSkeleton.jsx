@@ -3,7 +3,7 @@ export default function TvSeasonSkeleton() {
     <div role="status" aria-label="Loading season"
       className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <span className="sr-only">Loading season...</span>
-      <div aria-hidden="true" className="space-y-8 motion-safe:animate-pulse">
+      <div aria-hidden="true" className="space-y-8 skeleton-pulse">
         <div className="h-11 w-40 rounded bg-zinc-800" />
         <div className="grid gap-6 sm:grid-cols-[180px_1fr]">
           <div className="aspect-[2/3] w-36 rounded-xl bg-zinc-800 sm:w-full" />

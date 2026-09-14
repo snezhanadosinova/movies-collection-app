@@ -1,19 +1,13 @@
 function PageLoader() {
   return (
-    <div
-      className="flex min-h-[60vh] items-center justify-center"
-      role="status"
-    >
-      <div
-        className="h-8 w-8 animate-spin rounded-full border-2
-                   border-zinc-700 border-t-red-500
-                   motion-reduce:animate-none"
-        aria-hidden="true"
-      />
-
+    <div role="status" aria-label="Loading page" className="mx-auto min-h-[60vh] max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <span className="sr-only">Loading...</span>
+      <div aria-hidden="true" className="space-y-6 skeleton-pulse">
+        <div className="h-10 w-2/3 max-w-md rounded-xl bg-zinc-800" />
+        <div className="h-6 w-1/3 rounded-xl bg-zinc-800" />
+        <div className="h-64 rounded-xl bg-zinc-800" />
+      </div>
     </div>
   );
 }
-
 export default PageLoader;

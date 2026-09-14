@@ -34,3 +34,9 @@ export const getTmdbBackdropSrcSet = (path) => {
 export const getTmdbPosterSmallUrl = (path) => {
   return getTmdbImageUrl(path, TMDB_IMAGE_SIZES.POSTER_SMALL);
 };
+export const getTmdbPosterSrcSet = (path) => {
+  if (!path) return undefined;
+  return [342, 500, 780]
+    .map((width) => `${getTmdbImageUrl(path, `w${width}`)} ${width}w`)
+    .join(", ");
+};

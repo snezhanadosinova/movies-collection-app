@@ -1,3 +1,4 @@
+import CatalogSkeleton from "@/components/movie/CatalogSkeleton";
 import TvSeasonSkeleton from "@/features/tv/components/TvSeasonSkeleton";
 import TvDetailsSkeleton from "@/features/tv/components/TvDetailsSkeleton";
 import { lazy, Suspense } from "react";
@@ -26,8 +27,8 @@ const LazyPersonDetailsPage = lazy(
   () => import("@/features/people/pages/PersonDetailsPage"),
 );
 
-function PageBoundary({ children }) {
-  return <Suspense fallback={<PageLoader />}>{children}</Suspense>;
+function PageBoundary({ children, fallback = <PageLoader /> }) {
+  return <Suspense fallback={fallback}>{children}</Suspense>;
 }
 
 export function RegisterRoute() {
@@ -82,7 +83,7 @@ const LazyTvCatalogPage = lazy(() => import("@/features/tv/pages/TvCatalogPage")
 
 export function TvCatalogRoute() {
   return (
-    <PageBoundary>
+    <PageBoundary fallback={<CatalogSkeleton label="Loading TV series" />}>
       <LazyTvCatalogPage />
     </PageBoundary>
   );
@@ -108,5 +109,10 @@ export function TvSeasonRoute() {
 const LazyMovieCatalogPage = lazy(() => import("@/features/movies/pages/MovieCatalogPage"));
 
 export function MovieCatalogRoute() {
-  return <PageBoundary><LazyMovieCatalogPage /></PageBoundary>;
+  return <PageBoundary fallback={<CatalogSkeleton />}><LazyMovieCatalogPage /></PageBoundary>;
+}
+
+const LazyHomePage = lazy(() => import("@/features/movies/pages/HomePage"));
+export function HomeRoute() {
+  return <PageBoundary><LazyHomePage /></PageBoundary>;
 }

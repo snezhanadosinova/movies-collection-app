@@ -12,8 +12,8 @@ function MovieGrid({ movies }) {
         lg:grid-cols-4
       "
     >
-      {movies.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} />
+      {movies.map((movie, index) => (
+        <MovieCard key={movie.id} movie={movie} eager={index < 4} priority={index === 0} />
       ))}
     </div>
   );

@@ -1,10 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import MainLayout from "@/components/layout/MainLayout";
-import HomePage from "@/features/movies/pages/HomePage";
+
 import ProtectedRoute from "@/routes/ProtectedRoute";
 
 import {
+  HomeRoute,
   MovieCatalogRoute,
   TvCatalogRoute,
   TvDetailsRoute,
@@ -29,7 +30,7 @@ export const router = createBrowserRouter([
       { path: "tv", element: <TvCatalogRoute /> },
       {
         index: true,
-        element: <HomePage />,
+        element: <HomeRoute />,
       },
       {
         path: "register",

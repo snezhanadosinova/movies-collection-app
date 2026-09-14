@@ -21,7 +21,7 @@ function DiscoverySection({ title, mediaType, to, query, items }) {
           </p>
           <div aria-hidden="true" className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {Array.from({ length: 6 }, (_, index) => (
-              <div key={index} className="aspect-[2/3] rounded-xl bg-zinc-900 motion-safe:animate-pulse" />
+              <div key={index} className="aspect-[2/3] rounded-xl bg-zinc-900 skeleton-pulse" />
             ))}
           </div>
         </section>

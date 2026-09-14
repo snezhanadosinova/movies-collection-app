@@ -47,7 +47,7 @@ export function MovieHeroSection({ movie, loading = false, navigation }) {
         <div className="grid items-start gap-8 md:grid-cols-[260px_minmax(0,1fr)]">
         <div className="mx-auto aspect-[2/3] w-36 overflow-hidden rounded-2xl bg-zinc-800 shadow-xl sm:w-44 lg:mx-0 lg:w-full">
           {loading ? (
-            <div className="h-full animate-pulse bg-zinc-800 motion-reduce:animate-none" />
+            <div className="h-full skeleton-pulse bg-zinc-800 motion-reduce:animate-none" />
           ) : movie?.poster_path ? (
             <img
               src={getTmdbImageUrl(movie.poster_path)}
@@ -71,7 +71,7 @@ export function MovieHeroSection({ movie, loading = false, navigation }) {
 
               <div
                 aria-hidden="true"
-                className="space-y-5 animate-pulse motion-reduce:animate-none"
+                className="space-y-5 skeleton-pulse"
               >
                 <div className="h-5 w-40 rounded bg-zinc-800" />
                 <div className="h-12 w-4/5 rounded bg-zinc-800" />

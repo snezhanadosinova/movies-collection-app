@@ -1,14 +1,14 @@
 import MediaCard from "@/components/media/MediaCard";
 import FavoriteButton from "./FavoriteButton";
 
-function MovieCard({ movie }) {
+function MovieCard({ movie, eager = false, priority = false }) {
   if (!movie?.id) return null;
 
   const title = movie.title || "Untitled movie";
 
   return (
     <MediaCard
-      title={title}
+      title={title} eager={eager} priority={priority}
       to={`/movies/${movie.id}`}
       posterPath={movie.poster_path}
       voteAverage={movie.vote_average}

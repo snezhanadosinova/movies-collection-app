@@ -41,7 +41,7 @@ export function ProfileInfoCard({ user, loading = false, onProfileUpdate }) {
 
             <div
               aria-hidden="true"
-              className="animate-pulse motion-reduce:animate-none"
+              className="skeleton-pulse"
             >
               <div className="flex h-10 items-center">
                 <div className="h-6 w-48 max-w-full rounded bg-zinc-800" />

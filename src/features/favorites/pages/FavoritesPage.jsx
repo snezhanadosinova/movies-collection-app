@@ -35,7 +35,7 @@ export default function FavoritesPage() {
               {slot.item ? <FavoriteMediaCard item={slot.item} /> : (
                 <div aria-busy={slot.isPending} className="min-h-[520px] rounded-xl bg-zinc-900">
                   <div aria-hidden="true" className="mb-2 h-4" />
-                  <div aria-hidden="true" className={"h-[400px] rounded-xl bg-zinc-800 " + (slot.isPending ? "motion-safe:animate-pulse" : "")} />
+                  <div aria-hidden="true" className={"h-[400px] rounded-xl bg-zinc-800 " + (slot.isPending ? "skeleton-pulse" : "")} />
                   <p className="p-4 text-sm text-zinc-400">
                     {slot.isError ? "Could not load this favorite. Use Retry above." : "Loading favorite..."}
                   </p>

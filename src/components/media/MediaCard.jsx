@@ -1,8 +1,8 @@
 import { getScrollKey } from "@/utils/scrollReturn";
 import { Link, useLocation } from "react-router-dom";
-import { getTmdbImageUrl } from "@/utils/tmdbImages";
+import { getTmdbImageUrl, getTmdbPosterSrcSet } from "@/utils/tmdbImages";
 
-function MediaCard({ title, to, posterPath, voteAverage, action }) {
+function MediaCard({ title, to, posterPath, voteAverage, action, eager = false, priority = false }) {
   const location = useLocation();
   const rating = Number.isFinite(voteAverage)
     ? voteAverage.toFixed(1)
@@ -21,8 +21,12 @@ function MediaCard({ title, to, posterPath, voteAverage, action }) {
           {posterPath ? (
             <img
               src={getTmdbImageUrl(posterPath)}
+              srcSet={getTmdbPosterSrcSet(posterPath)}
+              sizes="(min-width: 1280px) 286px, (min-width: 1024px) max(286px, calc((100vw - 136px) / 4)), (min-width: 768px) max(286px, calc((100vw - 96px) / 3)), (min-width: 640px) calc((100vw - 72px) / 2), calc(100vw - 32px)"
               alt=""
-              loading="lazy"
+              loading={eager ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
+              width="500" height="750"
               className="h-full w-full object-cover transition group-hover:opacity-85"
             />
           ) : (
