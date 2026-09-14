@@ -97,7 +97,7 @@ describe("useMovieFilter URL state", () => {
     expect(result.current.filter.isSearching).toBe(true);
 
     expect(useSearchMovies).toHaveBeenLastCalledWith("Alien");
-    expect(useInfiniteDiscoverMovies).toHaveBeenLastCalledWith("27");
+    expect(useInfiniteDiscoverMovies).toHaveBeenLastCalledWith("27", { enabled: false });
   });
 
   it("updates search without removing other URL parameters", () => {

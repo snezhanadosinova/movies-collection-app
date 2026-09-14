@@ -63,9 +63,9 @@ export const useMovieFilter = () => {
 
   const { data: genres = [] } = useMovieGenres();
 
-  const popularQuery = useInfinitePopularMovies();
+  const popularQuery = useInfinitePopularMovies({ enabled: !isSearching && !selectedGenre });
   const searchQuery = useSearchMovies(debouncedSearch);
-  const discoverQuery = useInfiniteDiscoverMovies(selectedGenre);
+  const discoverQuery = useInfiniteDiscoverMovies(selectedGenre, { enabled: !isSearching });
 
   const paginationQuery = selectedGenre ? discoverQuery : popularQuery;
   const activeQuery = isSearching ? searchQuery : paginationQuery;

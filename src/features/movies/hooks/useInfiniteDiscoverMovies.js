@@ -1,7 +1,7 @@
 import { useInfiniteMovieQuery } from "@/hooks/useInfiniteMovieQuery";
 import { discoverMovies } from "../api/tmdbApi";
 
-export const useInfiniteDiscoverMovies = (genre) => {
+export const useInfiniteDiscoverMovies = (genre, { enabled = true } = {}) => {
   return useInfiniteMovieQuery(
     ["discoverMovies", genre],
     ({ pageParam = 1 }) =>
@@ -9,6 +9,6 @@ export const useInfiniteDiscoverMovies = (genre) => {
         genre,
         page: pageParam,
       }),
-    { enabled: !!genre },
+    { enabled: enabled && !!genre },
   );
 };
