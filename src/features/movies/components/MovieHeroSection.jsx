@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { getScrollKey } from "@/utils/scrollReturn";
+import { Link, useLocation } from "react-router-dom";
 import FavoriteButton from "@/components/movie/FavoriteButton";
 import { getTmdbBackdropUrl, getTmdbBackdropSrcSet, getTmdbImageUrl } from "@/utils/tmdbImages";
 
 export function MovieHeroSection({ movie, loading = false, navigation }) {
+  const location = useLocation();
   const title = movie?.title || "Untitled movie";
   const genres = movie?.genres ?? [];
 
@@ -18,13 +20,11 @@ export function MovieHeroSection({ movie, loading = false, navigation }) {
 
   const year = movie?.release_date?.slice(0, 4) || "Year unavailable";
 
-  const directors = [
-    ...new Set(
-      (movie?.credits?.crew ?? [])
-        .filter((person) => person.job === "Director")
-        .map((person) => person.name),
-    ),
-  ];
+  const directors = [...new Map(
+    (movie?.credits?.crew ?? [])
+      .filter((person) => person.job === "Director" && Number.isSafeInteger(person.id) && person.id > 0 && person.name)
+      .map((person) => [person.id, person]),
+  ).values()];
 
   return (
     <section className="relative isolate overflow-hidden bg-zinc-950">
@@ -120,16 +120,34 @@ export function MovieHeroSection({ movie, loading = false, navigation }) {
                 {movie.overview || "An overview is not available yet."}
               </p>
 
-              {directors.length > 0 && (
-                <p className="mt-4 text-sm text-zinc-300">
-                  <span className="font-semibold text-white">Directed by:</span>{" "}
-                  {directors.join(", ")}
-                </p>
-              )}
+
 
               <div className="mt-6">
                 <FavoriteButton movieId={movie.id} />
               </div>
+              {directors.length > 0 && (
+                <div className="mt-6">
+                  <h2 className="mt-4 text-sm text-zinc-300 font-bold">
+                    Directed by
+                  </h2>
+                  <ul className="flex flex-wrap gap-4">
+                    {directors.map((person) => (
+                      <li key={person.id}>
+                        <Link
+                          to={"/people/" + person.id}
+                          state={{
+                            fromMedia: location.pathname + location.search + location.hash,
+                            fromMediaKey: getScrollKey(location),
+                          }}
+                          className="rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400 inline-flex min-h-11 items-center text-red-400"
+                        >
+                          {person.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </>
           )}
         </div>
