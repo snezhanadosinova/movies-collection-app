@@ -43,5 +43,5 @@ body {
 
 /* Keep focused controls and anchor targets below the sticky navigation. */
 html {
-  scroll-padding-top: 6rem;
+  scroll-padding-top: 9rem;
 }

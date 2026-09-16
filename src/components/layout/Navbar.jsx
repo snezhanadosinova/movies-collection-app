@@ -40,7 +40,7 @@ function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-30 min-h-20 border-b border-zinc-800 bg-zinc-950">
+    <header className="relative min-h-20 border-b border-zinc-800 bg-zinc-950">
       <nav
         aria-label="Main navigation"
         className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 py-3"

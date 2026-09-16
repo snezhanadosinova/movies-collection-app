@@ -2,9 +2,7 @@ export default function MovieDetailsSkeleton({ navigation }) {
   return (
     <section className="bg-zinc-950">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-6 min-h-11">
-          {navigation ?? <div aria-hidden="true" className="h-11 w-36 rounded bg-zinc-800 skeleton-pulse" />}
-        </div>
+        {navigation}
         <div role="status" aria-label="Loading movie">
           <span className="sr-only">Loading movie...</span>
           <div aria-hidden="true" className="grid items-start gap-8 skeleton-pulse md:grid-cols-[260px_minmax(0,1fr)]">

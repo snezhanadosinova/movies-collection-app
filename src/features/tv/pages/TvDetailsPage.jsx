@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/common/Breadcrumbs";
 import { getCatalogReturn } from "@/utils/scrollReturn";
 import { getScrollKey } from "@/utils/scrollReturn";
 import { getPersonReturnState } from "@/utils/personReturn";
@@ -32,7 +33,6 @@ export default function TvDetailsPage() {
   const fromPerson = returnState?.fromPerson;
   const hasPersonOrigin = Boolean(fromPerson);
   const backTo = hasPersonOrigin ? fromPerson : getCatalogReturn(location.state, "/tv");
-  const backLabel = hasPersonOrigin ? "Back to actor" : "TV Series";
   const {
     data: series,
     isPending,
@@ -44,7 +44,7 @@ export default function TvDetailsPage() {
   } = useTvDetails(id);
   const notFound = isInvalidId || (!series && error?.response?.status === 404);
 
-  if (!isInvalidId && isPending) return <TvDetailsSkeleton />;
+  if (!isInvalidId && isPending) return <><Breadcrumbs to={backTo} state={{ restoreScrollKey: hasPersonOrigin ? returnState.fromPersonKey : location.state?.fromCatalogKey }} replace={hasPersonOrigin} label={hasPersonOrigin ? "Back to actor" : "TV Series"} current={series?.name || "Series details"} /><TvDetailsSkeleton /></>;
 
   if (notFound || !series) {
     return (
@@ -67,12 +67,7 @@ export default function TvDetailsPage() {
             Retry
           </button>
         )}
-        <Link
-          to={backTo} state={{ restoreScrollKey: hasPersonOrigin ? returnState.fromPersonKey : location.state?.fromCatalogKey }} replace={hasPersonOrigin}
-          className={focus + " mt-6 block w-fit py-3 text-red-400"}
-        >
-          {hasPersonOrigin ? backLabel : "Browse TV series"}
-        </Link>
+        <Breadcrumbs to={backTo} state={{ restoreScrollKey: hasPersonOrigin ? returnState.fromPersonKey : location.state?.fromCatalogKey }} replace={hasPersonOrigin} label={hasPersonOrigin ? "Back to actor" : "TV Series"} current={series?.name || "Series details"} />
       </div>
     );
   }
@@ -120,14 +115,7 @@ export default function TvDetailsPage() {
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <Link
-            to={backTo} state={{ restoreScrollKey: hasPersonOrigin ? returnState.fromPersonKey : location.state?.fromCatalogKey }} replace={hasPersonOrigin}
-            className={
-              focus + " mb-6 inline-flex min-h-11 items-center text-zinc-300"
-            }
-          >
-            ← {backLabel}
-          </Link>
+          <Breadcrumbs to={backTo} state={{ restoreScrollKey: hasPersonOrigin ? returnState.fromPersonKey : location.state?.fromCatalogKey }} replace={hasPersonOrigin} label={hasPersonOrigin ? "Back to actor" : "TV Series"} current={series?.name || "Series details"} />
           <div className="grid items-start gap-8 md:grid-cols-[260px_1fr]">
             <div className="mx-auto aspect-[2/3] w-36 overflow-hidden rounded-2xl bg-zinc-800 shadow-xl sm:w-44 lg:mx-0 lg:w-full">
               {series.poster_path ? (

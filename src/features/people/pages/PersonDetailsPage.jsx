@@ -1,6 +1,7 @@
+import Breadcrumbs from "@/components/common/Breadcrumbs";
 import PersonDetailsSkeleton from "../components/PersonDetailsSkeleton";
 import { getMediaReturnPath } from "@/utils/mediaReturn";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
 import { usePersonDetails } from "../hooks/usePersonDetails";
@@ -156,7 +157,7 @@ export default function PersonDetailsPage() {
   } = usePersonDetails(id);
 
   if (isLoading && !isInvalidId) {
-    return <PersonDetailsSkeleton />;
+    return <><Breadcrumbs to={backTo} state={{ restoreScrollKey: fromMedia ? location.state?.fromMediaKey : undefined }} replace={Boolean(fromMedia)} label={backLabel} current={person?.name || "Person details"} /><PersonDetailsSkeleton /></>;
   }
 
   const isNotFound = isInvalidId || error?.response?.status === 404;
@@ -185,24 +186,14 @@ export default function PersonDetailsPage() {
           </button>
         )}
 
-        <Link
-          to={backTo} state={{ restoreScrollKey: fromMedia ? location.state?.fromMediaKey : undefined }} replace={Boolean(fromMedia)}
-          className={`${focusClassName} mt-6 block w-fit py-3 text-red-400`}
-        >
-          <span aria-hidden="true" className="mr-1">←</span>{backLabel}
-        </Link>
+        <Breadcrumbs to={backTo} state={{ restoreScrollKey: fromMedia ? location.state?.fromMediaKey : undefined }} replace={Boolean(fromMedia)} label={backLabel} current={person?.name || "Person details"} />
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 text-white sm:px-6 lg:px-8">
-      <Link
-        to={backTo} state={{ restoreScrollKey: fromMedia ? location.state?.fromMediaKey : undefined }} replace={Boolean(fromMedia)}
-        className={`${focusClassName} mb-8 inline-flex min-h-11 items-center text-sm text-zinc-400 hover:text-white`}
-      >
-        <span aria-hidden="true" className="mr-1">←</span>{backLabel}
-      </Link>
+      <Breadcrumbs to={backTo} state={{ restoreScrollKey: fromMedia ? location.state?.fromMediaKey : undefined }} replace={Boolean(fromMedia)} label={backLabel} current={person?.name || "Person details"} />
 
       {isError && (
         <div className="mb-6 rounded-xl border border-amber-800 p-4">

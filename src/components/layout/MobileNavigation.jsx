@@ -20,7 +20,7 @@ export default function MobileNavigation() {
               {open ? <path d="m6 6 12 12M6 18 18 6" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
             </svg>
           </PopoverButton>
-          <PopoverPanel className="absolute inset-x-0 top-full max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-zinc-700 bg-zinc-950 p-4 shadow-xl md:hidden">
+          <PopoverPanel className="absolute inset-x-0 top-full z-40 max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-zinc-700 bg-zinc-950 p-4 shadow-xl md:hidden">
             <ul className="mx-auto flex max-w-7xl flex-col gap-2">
               {links.map(({ to, label, end }) => (
                 <li key={to}>

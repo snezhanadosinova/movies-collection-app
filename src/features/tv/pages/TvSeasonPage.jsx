@@ -1,5 +1,6 @@
+import Breadcrumbs from "@/components/common/Breadcrumbs";
 import { getPersonReturnState } from "@/utils/personReturn";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { getTmdbImageUrl } from "@/utils/tmdbImages";
 import { useTvSeason } from "../hooks/useTvSeason";
 import { formatTvDate } from "../utils/tvDetails";
@@ -21,7 +22,7 @@ export default function TvSeasonPage() {
   const backLabel = validSeriesId ? "Back to series" : "Browse TV series";
   const notFound = isInvalidParams || (!season && error?.response?.status === 404);
 
-  if (!isInvalidParams && isPending) return <TvSeasonSkeleton />;
+  if (!isInvalidParams && isPending) return <><Breadcrumbs to={backTo} state={{ ...returnState, restoreScrollKey: location.state?.fromSeriesKey }} replace label={backLabel} current={season?.name || "Season " + seasonNumber} /><TvSeasonSkeleton /></>;
 
   if (notFound || !season) {
     return (
@@ -38,9 +39,7 @@ export default function TvSeasonPage() {
             {isFetching ? "Retrying..." : "Retry"}
           </button>
         )}
-        <Link to={backTo} state={{ ...returnState, restoreScrollKey: location.state?.fromSeriesKey }} replace className={focusClass + " mt-6 block w-fit py-3 text-red-400"}>
-          {backLabel}
-        </Link>
+        <Breadcrumbs to={backTo} state={{ ...returnState, restoreScrollKey: location.state?.fromSeriesKey }} replace label={backLabel} current={season?.name || "Season " + seasonNumber} />
       </div>
     );
   }
@@ -53,9 +52,7 @@ export default function TvSeasonPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 text-white sm:px-6">
-      <Link to={backTo} state={{ ...returnState, restoreScrollKey: location.state?.fromSeriesKey }} replace className={focusClass + " mb-8 inline-flex min-h-11 items-center text-zinc-300"}>
-        ← {backLabel}
-      </Link>
+      <Breadcrumbs to={backTo} state={{ ...returnState, restoreScrollKey: location.state?.fromSeriesKey }} replace label={backLabel} current={season?.name || "Season " + seasonNumber} />
 
       {isError && (
         <div className="mb-6 rounded-xl border border-amber-800 p-4">
