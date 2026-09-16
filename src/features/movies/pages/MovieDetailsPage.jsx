@@ -1,3 +1,4 @@
+import MovieDetailsSkeleton from "../components/MovieDetailsSkeleton";
 import { getCatalogReturn } from "@/utils/scrollReturn";
 import { getPersonReturnState } from "@/utils/personReturn";
 import { Link, useLocation, useParams } from "react-router-dom";
@@ -53,7 +54,7 @@ function MovieDetailsPage() {
   }
 
   if (isLoading) {
-    return <MovieHeroSection loading navigation={backLink} />;
+    return <MovieDetailsSkeleton navigation={backLink} />;
   }
 
   if (!movie) {

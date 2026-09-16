@@ -1,3 +1,4 @@
+import FavoritesSkeleton from "./FavoritesSkeleton";
 import { useId, useState } from "react";
 import FavoriteMediaCard from "@/components/media/FavoriteMediaCard";
 import MovieGridSkeleton from "@/components/movie/MovieGridSkeleton";
@@ -9,6 +10,7 @@ export default function FavoritesPage() {
   const { data: items = [], slots, isLoading, isError, isFetching, refetch } = useFavoriteMovies();
   const visibleItems = (slots ?? items.map((item) => ({ ...item, item }))).filter((item) => filter === "all" || (item.media_type || "movie") === filter);
 
+  if (isLoading && !visibleItems.length) return <FavoritesSkeleton />;
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 text-white sm:px-6">
       <h1 className="mb-6 text-3xl font-bold">Your Favorites</h1>

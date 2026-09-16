@@ -1,3 +1,4 @@
+import ProfileSkeleton from "../components/ProfileSkeleton";
 import { useAuth } from "@/features/auth/context/useAuth";
 import { useFavoriteMovies } from "@/features/favorites/hooks/useFavoriteMovies";
 
@@ -18,6 +19,8 @@ function ProfilePage() {
 
   const isProfileReady = !loading && Boolean(user);
   const isPreviewLoading = !isProfileReady || favoritesLoading;
+
+  if (!isProfileReady) return <ProfileSkeleton />;
 
   return (
     <div className="mx-auto max-w-5xl p-6 text-white">

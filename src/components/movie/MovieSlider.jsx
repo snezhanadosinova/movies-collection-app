@@ -1,3 +1,4 @@
+import FeaturedSkeleton from "./FeaturedSkeleton";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y, Navigation, Autoplay, EffectFade } from "swiper/modules";
@@ -126,7 +127,8 @@ function FeaturedCarousel({ movies, genreMap }) {
 
 export default function MovieSlider() {
   const { movies, genreMap, isLoading, isError } = useSliderMovies();
-  if (isLoading || isError) {
+  if (isLoading) return <FeaturedSkeleton />;
+  if (isError) {
     return (
       <div className="pb-6">
         <div className="flex h-[75vh] items-center justify-center bg-zinc-900"

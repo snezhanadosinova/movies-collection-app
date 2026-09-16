@@ -1,3 +1,8 @@
+import MovieDetailsSkeleton from "@/features/movies/components/MovieDetailsSkeleton";
+import PersonDetailsSkeleton from "@/features/people/components/PersonDetailsSkeleton";
+import ProfileSkeleton from "@/features/profile/components/ProfileSkeleton";
+import FavoritesSkeleton from "@/features/favorites/pages/FavoritesSkeleton";
+import FeaturedSkeleton from "@/components/movie/FeaturedSkeleton";
 import CatalogSkeleton from "@/components/movie/CatalogSkeleton";
 import TvSeasonSkeleton from "@/features/tv/components/TvSeasonSkeleton";
 import TvDetailsSkeleton from "@/features/tv/components/TvDetailsSkeleton";
@@ -49,7 +54,7 @@ export function LoginRoute() {
 
 export function MovieDetailsRoute() {
   return (
-    <PageBoundary>
+    <PageBoundary fallback={<MovieDetailsSkeleton />}>
       <LazyMovieDetailsPage />
     </PageBoundary>
   );
@@ -57,7 +62,7 @@ export function MovieDetailsRoute() {
 
 export function ProfileRoute() {
   return (
-    <PageBoundary>
+    <PageBoundary fallback={<ProfileSkeleton />}>
       <LazyProfilePage />
     </PageBoundary>
   );
@@ -65,7 +70,7 @@ export function ProfileRoute() {
 
 export function FavoritesRoute() {
   return (
-    <PageBoundary>
+    <PageBoundary fallback={<FavoritesSkeleton />}>
       <LazyFavoritesPage />
     </PageBoundary>
   );
@@ -73,7 +78,7 @@ export function FavoritesRoute() {
 
 export function PersonDetailsRoute() {
   return (
-    <PageBoundary>
+    <PageBoundary fallback={<PersonDetailsSkeleton />}>
       <LazyPersonDetailsPage />
     </PageBoundary>
   );
@@ -114,5 +119,5 @@ export function MovieCatalogRoute() {
 
 const LazyHomePage = lazy(() => import("@/features/movies/pages/HomePage"));
 export function HomeRoute() {
-  return <PageBoundary><LazyHomePage /></PageBoundary>;
+  return <PageBoundary fallback={<FeaturedSkeleton />}><LazyHomePage /></PageBoundary>;
 }
