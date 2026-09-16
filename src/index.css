@@ -40,3 +40,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .skeleton-pulse { animation: none; }
 }
+
+/* Keep focused controls and anchor targets below the sticky navigation. */
+html {
+  scroll-padding-top: 6rem;
+}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import toast from "react-hot-toast";
 
@@ -8,7 +8,10 @@ import { useAuth } from "@/features/auth/context/useAuth";
 import { getInitials } from "@/utils/getInitials";
 import { readCachedAvatar } from "@/utils/avatarCache";
 
+import MobileNavigation from "./MobileNavigation";
+
 function Navbar() {
+  const location = useLocation();
   const { user, loading } = useAuth();
   const [cachedAvatar] = useState(readCachedAvatar);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -37,12 +40,13 @@ function Navbar() {
   };
 
   return (
-    <header className="min-h-20 border-b border-zinc-800 bg-zinc-950">
+    <header className="sticky top-0 z-30 min-h-20 border-b border-zinc-800 bg-zinc-950">
       <nav
         aria-label="Main navigation"
-        className="mx-auto flex min-h-20 max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3"
+        className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 py-3"
       >
-        <div className="flex flex-wrap items-center gap-4">
+        <MobileNavigation key={location.key} />
+        <div className="hidden items-center gap-4 md:flex">
           <NavLink to="/" end className={({ isActive }) =>
             "inline-flex min-h-11 items-center rounded text-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400 hover:underline " +
             (isActive ? "text-red-400 font-bold" : "text-white hover:text-red-400")
@@ -68,7 +72,7 @@ function Navbar() {
               <MenuButton
                 disabled={loading}
                 aria-label="Open account menu"
-                className="flex h-10 w-10 items-center justify-center
+                className="flex h-11 w-11 items-center justify-center
                            rounded-full bg-red-500 font-semibold text-white
                            focus-visible:outline-2
                            focus-visible:outline-offset-4
@@ -80,7 +84,7 @@ function Navbar() {
               {!loading && user && (
                 <MenuItems
                   anchor="bottom end"
-                  className="z-20 mt-2 w-52 rounded-xl border
+                  className="z-40 mt-2 w-52 rounded-xl border
                              border-zinc-800 bg-zinc-900 p-2
                              text-white shadow-xl focus:outline-none"
                 >
@@ -136,13 +140,13 @@ function Navbar() {
             <div className="h-10 w-10" aria-hidden="true" />
           ) : (
             <>
-              <Link to="/login" className="text-white hover:text-red-400">
+              <Link to="/login" className="inline-flex min-h-11 items-center rounded px-2 text-white hover:text-red-400 focus-visible:outline-2 focus-visible:outline-red-400">
                 Login
               </Link>
 
               <Link
                 to="/register"
-                className="rounded-md bg-red-500 px-4 py-2
+                className="inline-flex min-h-11 items-center rounded-md bg-red-500 px-4 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400
                            font-medium text-white transition hover:bg-red-600"
               >
                 Register
