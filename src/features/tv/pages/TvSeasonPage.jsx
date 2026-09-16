@@ -4,7 +4,7 @@ import { getTmdbImageUrl } from "@/utils/tmdbImages";
 import { useTvSeason } from "../hooks/useTvSeason";
 import { formatTvDate } from "../utils/tvDetails";
 import TvSeasonSkeleton from "../components/TvSeasonSkeleton";
-import EpisodeCard from "../components/EpisodeCard";
+import SeasonEpisodeList from "../components/SeasonEpisodeList";
 
 const focusClass = "rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400";
 const retryClass = focusClass + " mt-4 min-h-11 bg-red-500 px-5 py-2 disabled:opacity-50";
@@ -100,13 +100,7 @@ export default function TvSeasonPage() {
             No episodes are available for this season yet.
           </p>
         ) : (
-          <ol className="space-y-5">
-            {episodes.map((episode) => (
-              <li key={episode.id ?? episode.episode_number}>
-                <EpisodeCard episode={episode} />
-              </li>
-            ))}
-          </ol>
+          <SeasonEpisodeList key={id + ":" + seasonNumber} episodes={episodes} />
         )}
       </section>
     </div>

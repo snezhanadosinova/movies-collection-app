@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { Link, MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import TvSeasonPage from "@/features/tv/pages/TvSeasonPage";
 import { useTvSeason } from "@/features/tv/hooks/useTvSeason";
@@ -12,7 +12,7 @@ beforeEach(() => {
   vi.mocked(useTvSeason).mockImplementation(() => state);
 });
 function setup(url = "/tv/42/seasons/1") {
-  return render(<MemoryRouter initialEntries={[url]}><Routes>
+  return render(<MemoryRouter initialEntries={[url]}><Link to="/tv/42/seasons/2">Next season</Link><Link to="/tv/99/seasons/1">Other series</Link><Routes>
     <Route path="/tv/:id/seasons/:seasonNumber" element={<TvSeasonPage />} />
     <Route path="/tv/42" element={<h1>Series destination</h1>} />
   </Routes></MemoryRouter>);
@@ -68,5 +68,45 @@ describe("TvSeasonPage", () => {
     setup();
     expect(screen.queryByRole("heading", { name: "Season not found" })).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
+  });
+});
+
+describe("Season episode pagination", () => {
+  const makeEpisodes = (count) => Array.from({ length: count }, (_, index) => ({
+    id: index + 1,
+    episode_number: index + 1,
+    name: "Episode " + (index + 1),
+  }));
+
+  it("shows ten initially, then ten more, and handles the last partial batch", () => {
+    state.data = { episodes: makeEpisodes(23).reverse() };
+    setup();
+    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(10);
+    expect(screen.queryByRole("heading", { name: "Episode 11" })).toBeNull();
+    const button = screen.getByRole("button", { name: "Load more episodes" });
+    fireEvent.click(button);
+    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(20);
+    fireEvent.click(button);
+    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(23);
+    expect(screen.getByRole("status").textContent).toContain("Showing 23 of 23");
+    expect(button.getAttribute("aria-disabled")).toBe("true");
+    fireEvent.click(button);
+    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(23);
+  });
+
+  it.each([1, 10])("does not offer load more for %s episodes", (count) => {
+    state.data = { episodes: makeEpisodes(count) };
+    setup();
+    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(count);
+    expect(screen.queryByRole("button", { name: "Load more episodes" })).toBeNull();
+  });
+
+  it.each(["Next season", "Other series"])("resets the visible count after navigating to %s", (linkName) => {
+    state.data = { episodes: makeEpisodes(23) };
+    setup();
+    fireEvent.click(screen.getByRole("button", { name: "Load more episodes" }));
+    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(20);
+    fireEvent.click(screen.getByRole("link", { name: linkName }));
+    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(10);
   });
 });
